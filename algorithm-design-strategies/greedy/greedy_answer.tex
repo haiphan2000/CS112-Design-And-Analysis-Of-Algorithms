@@ -1,0 +1,1400 @@
+\documentclass[12pt, a4paper, fleqn]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{cases}
+\usepackage{tabularx}
+
+\usepackage{scrextend}
+\changefontsizes{13pt}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{0.1cm}
+\setlength{\mathindent}{0pt}
+
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total = {160mm, 247mm},
+	left = 25mm,
+	top = 25mm,
+}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength\cftaftertoctitleskip{30pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{CS112.K11}
+\fancyhead[RE,LO]{\textit{[HW04.e] Phương pháp quy hoạch động}}
+\fancyfoot[CE,RO]{\thepage}
+
+\usepackage{enumitem}
+
+\begin{document}
+	
+	\begin{titlepage}
+		   %Vẽ đường viền
+		   \begin{tikzpicture}[overlay, remember picture]
+				%Vẽ đường viền màu xanh
+				\draw
+					[blue!70!black, line width = 6pt]
+					([xshift = -1.5cm, yshift = -2cm] current page.north east) coordinate (A) --
+					([xshift = 1.5cm, yshift = -2cm] current page.north west) coordinate(B) --
+					([xshift = 1.5cm, yshift = 2cm] current page.south west) coordinate (C) --
+					([xshift = -1.5cm, yshift = 2cm] current page.south east) coordinate(D) -- cycle;
+			
+				%Vẽ đường viền màu đen
+				\draw
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] B)--
+					([yshift = -0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = -0.2cm] B)--
+					([yshift = 0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = 0.2cm] A);
+			\end{tikzpicture}
+		
+		%Thiết kế nội dung cho phần bìa
+		\begin{center}
+			\textbf{TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN}
+			
+			\vspace*{0.2cm}
+
+			\textbf{KHOA KHOA HỌC MÁY TÍNH}
+			
+			\vspace*{0.2cm}
+			
+			\textbf{----------oOo----------}
+			
+			\vspace{1.5cm}
+			
+			\includegraphics[width=0.25\textwidth]{UIT_Logo}
+			
+			\vspace{1.5cm}
+			
+			\Large
+			\textbf{BÀI TẬP SỐ 04.e\\THIẾT KẾ GIẢI THUẬT\\PHƯƠNG PHÁP QUY HOẠCH ĐỘNG}
+		
+		\end{center}
+			
+			\vspace{2.5cm}
+			\normalsize	
+			
+			\hspace{70pt} \textbf{\textit{Giảng viên hướng dẫn:}} ThS. Huỳnh Thị Thanh Thương\\
+			
+			\vspace*{1cm}
+			
+			\hspace{70pt} \textbf{\textit{Nhóm sinh viên:}}
+			
+			\vspace*{0.4cm}
+			
+			\hspace{70pt} 1. \hspace{10pt} Phan Thanh Hải  \hspace{45pt} 18520705
+			
+			\vspace{4cm}
+		
+		\begin{center}
+			\textbf{TP. HỒ CHÍ MINH, 13/02/2020}
+		\end{center}
+			
+	\end{titlepage}
+
+	%Làm trang mục lục	
+	\begin{center}
+		\tableofcontents
+	\end{center}
+	\clearpage
+	
+	\setlength{\abovedisplayskip}{5pt}
+	\setlength{\belowdisplayskip}{5pt}
+	
+	\setlist{noitemsep, topsep = 0pt, partopsep = 0pt, leftmargin = 0cm, labelindent = 0cm, itemindent = 1cm, align = left}
+	
+	\section*{Bài tập 3}
+	
+	\addcontentsline{toc}{section}{Bài tập 3}
+	
+	\textbf{BÀI TOÁN NHÂN CHUỖI/DÃY MA TRẬN (MATRIX CHAIN MULTIPLICATION)}
+	
+	Consider the problem of minimizing the total number of multiplications made in computing the product of $n$ matrices
+	$$A_1 \cdot A_2 \cdots A_n$$
+	whose dimensions are $d_0 \times d_1, d_1 \times d_2, \cdots , d_{n - 1} \times d_n$, respectively. Assume that all intermediate products of two matrices are computed by the bruteforce (definition-based) algorithm.
+	
+	Design a dynamic programming algorithm for finding an optimal order of multiplying n matrices.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Một chuỗi ma trận $A_1 \cdot A_2 \cdots A_n$, với $A_i$ có kích thước là $d_{i - 1} \times d_i$.
+	
+	\textbf{OUTPUT}
+	
+	Tổng số phép nhân thực hiện là ít nhất để nhân chuỗi ma trận trên.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i, j)$ là số lượng phép nhân tối thiểu cho bài toán $A_i \cdot A_{i + 1} \cdots A_j$. Để thiết lập công thức quy hoạch động cho $F(i, j)$, ta xét:
+	
+	$A_i \cdot A_{i + 1} \cdots A_j = (A_i \cdot A_{i + 1}  \cdots A_k) \cdot (A_{k + 1} \cdot A_{k + 2} \cdots A_j)$ $(i < j, i \leq k < j)$.
+	
+	Bài toán $A_i \cdot A_{i + 1}  \cdots A_k$ cho kết quả là một ma trận có kích thước $d_{i - 1}d_k$, tổng số lượng phép nhân tối thiểu là $F(i, k)$. Bài toán $A_{k + 1} \cdot A_{k + 2}  \cdots A_j$ cho kết quả là một ma trận có kích thước $d_kd_j$, tổng số lượng phép nhân tối thiểu là $F(k + 1, j)$.
+	
+	Hai ma trận ở trên nhân cho nhau thì tổng số lượng phép nhân là $F(i, k) + F(k + 1, j) + d_{i - 1}d_kd_j$.
+	
+	Để tổng số lượng phép nhân đó đạt tối thiểu thì
+	
+	$F(i, j) = \min\{F(i, k) + F(k + 1, j) + d_{i - 1}d_kd_j\}$ $(0 < i < j, i \leq k < j)$.
+	
+	Nếu $i = j$ thì chỉ có một ma trận nên $F(i ,j) = 0$.
+	
+	Kết quả của bài toán gốc nằm ở $F(1, n)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input: Kích thước của $n$ ma trận được lưu trên mảng một chiều $d$.
+	
+	// Output: Tổng số phép nhân thực hiện ít nhất để nhân một chuỗi các ma trận trên.
+	
+		\textbf{MatrixChainMultiplication}$(d[1..n])$
+		\begin{enumerate}
+			\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+			\item \qquad $F[i, i] = 0$;
+			\item \textbf{for} $p = 1$ \textbf{to} $n - 1$ \textbf{do}
+			\item \qquad \textbf{for} $i = 1$ \textbf{to} $n - p$ \textbf{do}
+			\item \qquad \qquad $j = i + p$;
+			\item \qquad \qquad $F[i, j] = \infty$;
+			\item \qquad \qquad \textbf{for} $k = i$ \textbf{to} $j - 1$ \textbf{do}
+			\item \qquad \qquad \qquad $temp = F[i, k] + F[k + 1, j] + d[i - 1] * d[k] * d[j]$;
+			\item \qquad \qquad \qquad \textbf{if} $temp < F[i, j]$
+			\item \qquad \qquad \qquad \qquad $F[i, j] = temp$;
+			\item \textbf{return} $F[1, n]$;
+		\end{enumerate}
+
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				2 & 24 \\
+				2 3 & \\
+				3 4 & \\
+				\hline
+				
+				\hline
+				6 & 15125 \\
+				30 35 & \\
+				35 15 & \\
+				15 5 & \\
+				5 10 & \\
+				10 20 & \\
+				20 25 & \\
+				\hline
+				
+				6 & 2010 \\
+				5 10 & \\
+				10 3 & \\
+				3 12 & \\
+				12 5 & \\
+				5 50 & \\
+				50 6 & \\
+				\hline
+				
+				4 & 572 \\
+				14 14 & \\
+				14 2 & \\
+				2 4 & \\
+				4 5 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Độ phức tạp của hàm thời gian thực hiện chương trình là O$(n^3)$ (3 vòng lặp để tính hết giá trị của $F$).
+	
+	\clearpage
+
+	\section*{Bài tập 4}
+	
+	\addcontentsline{toc}{section}{Bài tập 4}
+
+	\textbf{CHUỖI CON CHUNG DÀI NHẤT (LONGEST COMMON SUBSEQUENCE)}
+	
+	Give two sequences $X = \langle x_1, x_2, \cdots, x_m \rangle$ and $Y = \langle y_1, y_2, \cdots, y_n \rangle$. Find a longest subsequence common to them both.
+
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+
+	Hai chuỗi $X$ và $Y$.
+
+	\textbf{OUTPUT}
+
+	Độ dài chuỗi con chung dài nhất của $X$ và $Y$.
+
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i, j)$ là độ dài chuỗi con chung dài nhất của $X_i = \langle x_1, x_2, \cdots, x_i \rangle$ và $Y_j = \langle y_1, y_2, \cdots, y_j \rangle$. Để thiết lập công thức quy hoạch động cho $F(i, j)$, ta xét:
+	
+	Gọi $Z_k = \langle z_1, z_2, \cdots, z_k \rangle$ là chuỗi con chung dài nhất của $X_i = \langle x_1, x_2, \cdots, x_i \rangle$ và $Y_j = \langle y_1, y_2, \cdots, y_j \rangle$.
+	
+	Khi đó:
+	
+	Nếu $x_i = y_j$ thì $z_k = x_i = y_j$ và $Z_{k - 1}$ là chuỗi con chung dài nhất của $X_{i - 1}$ và $Y_{j - 1}$.
+	
+	Nếu $x_i \neq y_j$ thì $z_k \neq x_i$ và $Z_k$ là chuỗi con chung dài nhất của $X_{i - 1}$ và $Y_j$.
+	
+	Nếu $x_i \neq y_j$ thì $z_k \neq y_j$ và $Z_k$ là chuỗi con chung dài nhất của $X_i$ và $Y_{j - 1}$.
+	
+	Do đó, $F(i, j) = F(i - 1, j - 1) + 1$ nếu $i = j$.
+	
+	Hoặc, $F(i, j) = \max\{F(i, j - 1), F(i - 1, j)\}$ nếu $i \neq j$.
+	
+	Nếu $i = 0$ hoặc $j = 0$ thì không thể có chuỗi con nên $F(i ,j) = 0$.
+	
+	Kết quả của bài toán gốc nằm ở $F(m, n)$.
+
+	\subsection*{c. Thuật giải}
+	
+	// Input: Hai chuỗi $X$ và $Y$.
+	
+	// Output: Độ dài chuỗi con chung dài nhất của $X$ và $Y$.
+
+	\textbf{LCSLength}$(X, Y)$
+	\begin{enumerate}
+		\item $m =$ length$(X)$;
+		\item $n =$ length$(Y)$;
+		\item \textbf{for} $i = 1$ \textbf{to} $m$ \textbf{do}
+		\item \qquad $F[i, 0] = 0$;
+		\item \textbf{for} $j = 0$ \textbf{to} $n$ \textbf{do}
+		\item \qquad $F[0, j] = 0$;
+		\item \textbf{for} $i = 1$ \textbf{to} $m$ \textbf{do}
+		\item \qquad \textbf{for} $j = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \qquad \textbf{if} $X[i] = Y[i]$
+		\item \qquad \qquad \qquad $F[i, j] = F[i - 1, j - 1] + 1$;
+		\item \qquad \qquad \textbf{else}
+		\item \qquad \qquad \qquad \textbf{if} $F[i - 1, j] \geq F[i, j - 1]$
+		\item \qquad \qquad \qquad \qquad $F[i, j] = F[i - 1, j]$;
+		\item \qquad \qquad \qquad \textbf{else}
+		\item \qquad \qquad \qquad \qquad $F[i, j] = F[i, j - 1]$;
+		\item \textbf{return} $F[m, n]$;
+	\end{enumerate}
+
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				ABCBDAB & 4 \\
+				BDCABA & \\
+				\hline
+				
+				\hline
+				ABC & 3 \\
+				DABEC & \\
+				\hline
+				
+				\hline
+				ABDE & 4 \\
+				ABDE & \\
+				\hline
+				
+				\hline
+				AXE & 0 \\
+				CBD & \\
+				\hline
+			
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Quá trình tính toán mỗi giá trị $F[i, j]$ có thời gian thực hiện là O$(1)$.
+	
+	Quá trình trên thực hiện $m \cdot n$ lần nên độ phức tạp của hàm thời gian thực hiện chương trình là O$(mn)$.
+
+	\clearpage
+	
+	\section*{Bài tập 5.1}
+	
+	\addcontentsline{toc}{section}{Bài tập 5.1}
+	
+	\textbf{TÌM ĐƯỜNG ĐI NGẮN NHẤT (SHORTEST PATH PROBLEM)}
+	
+	Cho một đồ thị có hướng $G = (V, E)$ với các cung được gán trọng số dương. Tìm đường đi có độ dài nhỏ nhất từ một đỉnh xuất phát $s \in V$ đến đỉnh cuối $f \in V$.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Đồ thị có hướng $G = (V, E)$ với các cung được gán trọng số dương.
+	
+	Đỉnh xuất phát $s \in V$ đến đỉnh cuối $f \in V$.
+	
+	\textbf{OUTPUT}
+	
+	Độ dài nhỏ nhất của đường đi từ đỉnh xuất phát $s \in V$ đến đỉnh cuối $f \in V$ (nếu có).
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $adj(i, j)$ là độ dài nhỏ nhất của đường đi xuất phát từ đỉnh $i \in V$ đến đỉnh $j \in V$.
+	
+	Thay vì đi trực tiếp từ $i$ đến $j$, ta tìm một đường đi gián tiếp đến đỉnh $k$ $(i \rightarrow k \rightarrow j)$ và nếu đường đi gián tiếp này nhỏ hơn đường đi trực tiếp từ $i$ đến $j$ thì ta gán luôn cho $adj[i, j]$.
+	
+	Khi đó, $adj(i, j) = \min\{adj(i, j), adj(i, k) + adj(k, j)\}$.
+	
+	Kết quả của bài toán gốc nằm ở $adj(s, f)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input:
+	
+	Ma trận kề $adj$ lưu thông tin khoảng cách giữa các đỉnh.
+	
+	Vị trí bắt đầu $s$ và vị trí kết thúc $f$.
+	
+	// Output: Độ dài của đường đi ngắn nhất đi từ vị trí bắt đầu $s$ đến vị trí kết thúc $f$.
+	
+	\textbf{DuongDiNganNhat}$(adj[1..V, 1..V], s, f)$
+	\begin{enumerate}
+		\item \textbf{for} $k = 1$ \textbf{to} $V$ \textbf{do}
+		\item \qquad \textbf{for} $i = 1$ \textbf{to} $V$ \textbf{do}
+		\item \qquad \qquad \textbf{for} $j = 1$ \textbf{to} $V$ \textbf{do}
+		\item \qquad \qquad \qquad $adj[i, j] = \min\{adj[i, j], adj[i, k] + adj[k, j]\}$;
+		\item \textbf{return} $adj[s, f]$;
+	\end{enumerate}
+	
+	\subsection*{d. VD minh họa}
+	
+	Nếu không có đường đi từ điểm này đến điểm kia, ta sẽ điền vào ma trận kề giá trị 9999, giá trị này tương đương với $\infty$ khi tính toán.	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {10 cm} | m {6 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				4 & 6 \\
+				0 9999 3 9999 & \\
+				2 0 9999 9999 & \\
+				9999 7 0 1 & \\
+				6 9999 9999 0 & \\
+				2 4 & \\
+				\hline
+				
+				3 & 0 \\
+				0 9999 3 & \\
+				2 9999 0 & \\
+				9999 9999 0  & \\
+				2 3 & \\
+				\hline
+				
+				8 & 22 \\
+				0 4 9999 9999 9999 9999 7 4 & \\
+				9999 0 9 9999 9999 6 8 1 & \\
+				9999 9999 0 9999 10 9999 9999 9999 & \\
+				9999 9999 9999 0 9999 9999 9999 9999 & \\
+				9999 9999 8 6 0 5 9999 9999 & \\
+				9999 9999 9999 9999 6 0 9999 9999 & \\
+				9999 4 9999 9999 9999 7 0 9999 & \\
+				9999 9999 3 9999 9999 9999 9999 0 & \\
+				1 4 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Độ phức tạp của hàm thời gian thực hiện chương trình là O$(V^3)$ (3 vòng lặp để tính hết giá trị của $adj$).
+	
+	\clearpage
+	
+
+	\section*{Bài tập 6.1}
+	
+	\addcontentsline{toc}{section}{Bài tập 6.1}
+	
+	\textbf{0/1 KNAPSACK PROBLEM}
+	
+	Cho $n$ đồ vật và một cái ba lô có thể đựng trọng lượng	tối đa $M$, mỗi đồ vật $i$ có trọng lượng $w_i$ và giá trị là $p_i$.
+	
+	Chọn một cách lựa chọn các đồ vật cho vào túi sao cho trọng lượng không quá $M$ và tổng giá trị là lớn nhất.
+	
+	Mỗi đồ vật hoặc là lấy đi hoặc là bỏ lại.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Tập hợp $n$ đồ vật bao gồm thông tin về giá trị và trọng lượng của chúng.
+	
+	Trọng lượng tối đa của ba lô.
+	
+	\textbf{OUTPUT}
+	
+	Tổng giá trị của các đồ vật cho vào ba lô sao cho trọng lượng không quá $M$.
+	
+	${\displaystyle
+		{\begin{aligned}
+			\max &\sum _{ i = 1}^{n}p_i x_i;\\
+			\end{aligned}}}$
+	
+	thỏa mãn ${\displaystyle
+		{\begin{aligned}
+			\sum _{ i = 1}^{n}w_i x_i \leq M\\
+			\end{aligned}}}$ và $x_{i}\in \{0,1\}$.
+		
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i, j)$ là tổng giá trị tối đa của các đồ vật được cho vào ba lô có trọng lượng tối đa là $j$ từ nhóm $i$ đồ vật ban đầu. Để thiết lập công thức quy hoạch động cho $F(i, j)$, ta chia nhóm $i$ đồ vật ban đầu ra thành 2 nhóm:
+	
+	+ Nhóm 1: Nhóm không thể cho đồ vật thứ $i$ vào trong ba lô được $(j - w_i < 0)$, khi đó $F(i, j) = F(i - 1, j)$ (trọng lượng tối đa của ba lô vẫn giữ nguyên).
+	
+	+ Nhóm 2: Nhóm có thể cho đồ vật thứ $i$ vào trong ba lô được $(j - w_i \geq 0)$, khi đó, nếu ta cho đồ vật thứ $i$ vào trong ba lô thì trọng lượng tối đa hiện tại của ba lô là $j - w_i$ và giá trị của $F(i, j)$ là $v_i + F(i - 1, j - w_i)$.
+	
+	Ta có công thức quy hoạch động của $F(i, j)$:
+	
+	$F(i, j) = {
+		\begin{cases}
+		\max\{F(i - 1, j), v_i + F(i - 1, j - w_i)\} & {j - w_i \geq 0} \\
+		F(i - 1, j) & {j - w_i < 0} \\
+		\end{cases}
+	}$
+	
+	Hiển nhiên, ta cũng có:
+	
+	$F(0, j) = 0, j \leq 0 \qquad \qquad \qquad \qquad F(i, 0) = 0, i \leq 0$.
+	
+	Kết quả của bài toán gốc nằm ở $F(n, M)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input:
+	
+	Giá trị $p$ và trọng lượng $w$ của $n$ đồ vật tương ứng.
+	
+	Trọng lượng tối đa của ba lô là $M$.
+	
+	// Output: Tổng giá trị lớn nhất của các đồ vật cho vào ba lô sao cho trọng lượng không quá $M$.
+	
+	\textbf{Knapsack}$(p[1..n], w[1..n], M)$
+	\begin{enumerate}
+		\item \textbf{for} $i = 0$ \textbf{to} $n$ \textbf{do}
+		\item \qquad $F[i, 0] = 0$;
+		\item \textbf{for} $j = 0$ \textbf{to} $M$ \textbf{do}
+		\item \qquad $F[0, j] = 0$;
+		\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \textbf{for} $j = 1$ \textbf{to} $M$ \textbf{do}
+		\item \qquad \qquad \textbf{if} $j - w[i] \geq 0$
+		\item \qquad \qquad \qquad $F[i, j] = \max\{F[i - 1, j], p[i] + F[i - 1, j - w[i]]\}$;
+		\item \qquad \qquad \textbf{else}
+		\item \qquad \qquad \qquad $F[i, j] = F[i - 1, j]$;
+		\item \textbf{return} $F[n, M]$;
+	\end{enumerate}
+
+	\subsection*{d. VD minh họa}
+
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				3 & 3 \\
+				1 4 & \\
+				2 5 & \\
+				3 1 & \\
+				4 & \\
+				\hline
+				
+				4 & 90 \\
+				10 5 & \\
+				40 4 & \\
+				30 6 & \\
+				50 3 & \\
+				10 & \\
+				\hline
+				
+				5 & 130 \\
+				33 15 & \\
+				24 20 & \\
+				36 17 & \\
+				37 8 & \\
+				12 31 & \\
+				80 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Độ phức tạp của hàm thời gian thực hiện chương trình là O$(nM)$.
+	
+	\clearpage
+	
+	\section*{Bài tập 6.2}
+	
+	\addcontentsline{toc}{section}{Bài tập 6.2}
+	
+	\textbf{UNBOUNDED KNAPSACK PROBLEM}
+	
+	Cho một cái ba lô có thể đựng trọng lượng $M$ với $n$ loại đồ vật, mỗi đồ vật loại $i$ có trọng lượng $w_i$ và giá trị là $p_i$. Chọn một cách lựa chọn các đồ vật	cho vào túi sao cho trọng lượng không quá $M$ và tổng giá trị là lớn nhất.
+	
+	Có thể chọn nhiều đồ vật cùng loại. Giả sử mỗi loại đồ vật không giới hạn về số lượng.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Tập hợp $n$ đồ vật bao gồm thông tin về giá trị và trọng lượng của chúng.
+	
+	Trọng lượng tối đa của ba lô.
+	
+	\textbf{OUTPUT}
+	
+	Tổng giá trị của các đồ vật cho vào ba lô sao cho trọng lượng không quá $M$.
+	
+	${\displaystyle
+		{\begin{aligned}
+			\max &\sum _{ i = 1}^{n}p_i x_i;\\
+			\end{aligned}}}$
+	
+	thỏa mãn ${\displaystyle
+		{\begin{aligned}
+			\sum _{ i = 1}^{n}w_i x_i \leq M\\
+			\end{aligned}}}$ và $x_i \geq 0$, $x_i$ là một số nguyên.
+		
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i)$ là tổng giá trị tối đa của các đồ vật được cho vào ba lô có trọng lượng tối đa là $i$.
+	
+	Lúc đầu thì $F(i) = 0$.
+	
+	Nếu đồ vật thứ $j$ có thể cho vào ba lô được $(w_i \leq i)$ thì ta có công thức quy hoạch động sau: $F(i) = \max\{F(i), F(i - w_j + p_i)\}$.
+	
+	Kết quả của bài toán gốc nằm ở $F(M)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input:
+	
+	Giá trị $p$ và trọng lượng $w$ của $n$ đồ vật tương ứng.
+	
+	Trọng lượng tối đa của ba lô là $M$.
+	
+	// Output: Tổng giá trị của các đồ vật cho vào ba lô sao cho trọng lượng không quá $M$.
+	
+	\clearpage
+	
+	\textbf{Knapsack}$(p[1..n], w[1..n], M)$
+	\begin{enumerate}
+		\item \textbf{for} $i = 0$ \textbf{to} $M$ \textbf{do}
+		\item \qquad $F[i] = 0$;
+		\item \textbf{for} $i = 1$ \textbf{to} $M$ \textbf{do}
+		\item \qquad \textbf{for} $j = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \qquad \textbf{if} $w[i] \leq i$
+		\item \qquad \qquad \qquad $F[i] = \max\{F[i], F[i - w[j]] + p[i]\}$;
+		\item \textbf{return} $F[M]$;
+	\end{enumerate}
+
+	\subsection*{d. VD minh họa}
+
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				3 & 12 \\
+				1 4 & \\
+				2 5 & \\
+				3 1 & \\
+				4 & \\
+				\hline
+				
+				2 & 100 \\
+				1 1 & \\
+				30 50 & \\
+				100 & \\
+				\hline
+				
+				4 & 120 \\
+				10 1 & \\
+				40 3 & \\
+				50 4 & \\
+				80 5 & \\
+				8 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Độ phức tạp của hàm thời gian thực hiện chương trình là O$(nM)$.
+	
+	\clearpage
+	
+	\section*{Bài tập 8}
+	
+	\addcontentsline{toc}{section}{Bài tập 8}
+	
+	\textbf{COIN-ROW PROBLEM}
+	
+	There is a row of $n$ coins whose values are some positive integers $c_1, c_2, ..., c_n$, not necessarily distinct. The goal is to pick up the maximum amount of money subject to the constraint that no two coins adjacent in the initial row can be picked up.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Giá trị của $n$ đồng xu.
+	
+	\textbf{OUTPUT}
+	
+	Số lượng lớn nhất các đồng xu có thể lấy từ $n$ đồng xu ban đầu với điều kiện là không thể lấy 2 đồng xu ở 2 trí liên tiếp nhau.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i)$ là số lượng đồng xu lớn nhất mà ta có thể lấy từ $i$ đồng xu ở trước. Để thiết lập công thức quy hoạch động cho $F(i)$, ta xét:
+	
+	+ Trường hợp 1: Nếu ta không lấy đồng xu thứ $i$ thì $F(i) = F(i - 1)$.
+	
+	+ Trường hợp 2: Nếu ta lấy đồng xu thứ $i$ thì khi đó, theo điều kiện của bài toán do đồng xu trước đó không thể lấy được nên $F(i) = c_i + F(i - 2)$.
+	
+	Ta có công thức quy hoạch động của $F(i)$:
+	
+	$F(0) = 0, \qquad \qquad \qquad F(1) = c_1$.
+	
+	$F(i) = \max\{c_i + F(i - 2), F(i - 1)\}$ với $i > 1$.
+	
+	Kết quả của bài toán gốc nằm ở $F(n)$.
+	
+	\subsection*{c. Thuật giải}
+	
+		// Input: Một mảng $C[1..n]$ lưu trữ giá trị của $n$ đồng xu.
+		
+		// Output: Số lượng lớn nhất các đồng xu có thể lấy từ $n$ đồng xu ban đầu với điều kiện là không thể lấy 2 đồng xu ở 2 trí liên tiếp nhau.
+		
+		\textbf{CoinRow}($C[1..n]$)
+		\begin{enumerate}
+			\item $F[0] = 0;$
+			\item $F[1] = C[1];$
+			\item \textbf{for} $i$ = 2 \textbf{to} $n$ \textbf{do}
+			\item \qquad $F[i] = \max(C[i] + F[i - 2], F[i - 1])$;
+			\item \textbf{return} $F[n];$
+		\end{enumerate}
+	
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				6 & 17 \\
+				5 1 2 10 6 2 & \\
+				\hline
+				
+				7 & 23 \\
+				7 9 10 9 3 5 2 & \\
+				\hline
+				
+				6 & 24 \\
+				7 3 9 10 8 6 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Quá trình tính toán mỗi giá trị $F[i]$ có thời gian thực hiện là O$(1)$.
+	
+	Quá trình trên thực hiện $n + 1$ lần nên độ phức tạp của hàm thời gian thực hiện chương trình là O$(n)$.
+	
+	\clearpage
+	
+	\section*{Bài tập 9}
+	
+	\addcontentsline{toc}{section}{Bài tập 9}
+	
+	\textbf{COIN-COLLECTING PROBLEM}
+		
+	Several coins are placed in cells of an $n \times m$ board, no more than one coin per cell. A robot, located in the upper left cell of the board, needs to collect as many of the coins as possible and bring them to	the bottom right cell. On each step, the robot can move either one cell to the right or one cell down from its current location. When the robot visits a cell with a coin, it always picks up that coin.
+	
+	Design an algorithm to find the maximum number of coins the robot can collect and a path it needs to follow to do this.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Một bảng kích thước $n \times m$ lưu trữ thông tin số lượng đồng xu tại mỗi ô trong bảng. Nếu tại ô $c_{ij}$ có đồng xu thì $c_{ij} = 1$ và ngược lại thì $c_{ij} = 0$.
+	
+	\textbf{OUTPUT}
+	
+	Số lượng lớn nhất các đồng xu mà robot có thể lấy cho đến khi đi tới ô cuối cùng bên góc phải của bảng.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i, j)$ là số lượng lớn nhất các đồng xu mà robot có thể lấy cho đến khi đi tới ô $c_{ij}$.
+	
+	Để tới được ô $c_{ij}$ thì ở bước trước đó, ô mà robot có thể đã đi qua là $c_{i - 1 j}$ hoặc là ô $c_{i j - 1}$.
+	
+	Do đó, giá trị của $F(i, j)$ sẽ phụ thuộc vào $F(i - 1, j)$ và $F(i, j - 1)$ trước đó - nếu ô nào có đồng xu thì robot sẽ lấy đồng xu trong ô đó.
+	
+	Ta có công thức quy hoạch động cho $F(i, j)$ là:
+	
+	$F(0, j) = 0$ với $1 \leq j \leq m$ \qquad \qquad \qquad \qquad $F(i, 0) = 0$ với $1 \leq i \leq n$.
+	
+	$F(i, j)$ = max$\{F(i - 1, j), F(i, j - 1)\} + c_{ij}$ với $1 \leq j \leq m, 1 \leq i \leq n$.
+	
+	Kết quả của bài toán gốc nằm ở $F(n, m)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input: Một mảng $C[1..n, 1..m]$ lưu trữ thông tin số lượng đồng xu tại mỗi ô trong bảng. Nếu tại ô $c_{ij}$ có đồng xu thì $c_{ij} = 1$ và ngược lại thì $c_{ij} = 0$.
+	
+	// Output: Số lượng lớn nhất các đồng xu mà robot có thể lấy cho đến khi đi tới ô cuối cùng bên góc phải của bảng.
+	
+		\textbf{CoinCollecting}($C[1..n, 1..m]$)
+		\begin{enumerate}
+			\item $F[1, 1] = C[1, 1]$;
+			\item \textbf{for} $j = 2$ \textbf{to} $m$ \textbf{do}
+			\item \qquad $F[1, j] = F[1, j - 1] + C[1, j]$;
+			\item \textbf{for} $i = 2$ \textbf{to} $n$ \textbf{do}
+			\item \qquad $F[i, 1] = F[i - 1, 1] + C[i, 1]$;
+			\item \qquad \textbf{for} $j = 2$ \textbf{to} $m$ \textbf{do}
+			\item \qquad \qquad $F[i, j] = \max(F[i - 1, j], F[i, j - 1]) + C[i, j]$;
+			\item \textbf{return} $F[n, m]$;
+		\end{enumerate}
+	
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				5 6 & 5 \\
+				0 0 0 0 1 0 & \\
+				0 1 0 1 0 0 & \\
+				0 0 0 1 0 1 & \\
+				0 0 1 0 0 1 & \\
+				1 0 0 0 1 0 & \\
+				\hline
+				
+				3 3 & 5 \\
+				1 1 1 & \\
+				1 1 1 & \\
+				1 1 1 & \\
+				\hline
+				
+				4 4 & 4 \\
+				1 0 1 0 & \\
+				0 0 0 0 & \\
+				1 1 0 1 & \\
+				0 0 0 0 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Quá trình tính toán mỗi giá trị $F[i, j]$ có thời gian thực hiện là O$(1)$.
+	
+	Quá trình trên thực hiện $n \cdot m$ lần nên độ phức tạp của hàm thời gian thực hiện chương trình là O$(nm)$.
+	
+	\clearpage
+	
+	\section*{Bài tập 10}
+	
+	\addcontentsline{toc}{section}{Bài tập 10}
+	
+	\textbf{CHANGE-MAKING PROBLEM}
+	
+	Consider the general instance of the following well-known problem. Give change for amount $n$ using the minimum number of coins of denominations $d_1 < d_2 < \cdots < d_m$.
+	
+	Design a dynamic programming algorithm for the general case, assuming availability of unlimited quantities of coins for each of the $m$ denominations $d_1 < d_2 < \cdots < d_m$ where $d_1 = 1$.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Các đồng xu được sắp xếp tăng dần theo giá trị tương ứng và đồng xu $n$ cần đổi.
+	
+	\textbf{OUTPUT}
+	
+	Số lượng đồng xu cần đổi là nhỏ nhất.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i)$ là số lượng đồng xu cần đổi là nhỏ nhất để đổi đồng xu $i$.
+	
+	Gọi $x$ là đồng xu đầu tiên trong đáp án tối ưu của bài toán. Khi đó, giá trị của đồng xu cần đổi còn lại là $i - x$.
+	
+	Như vậy, ta có $F(i) = F(i - x) + 1$.
+	
+	Vấn đề được đặt ra là ta không biết $x$ là cái nào nên ta sẽ thử mọi khả năng có thể có của $x$ để tính $F(i)$ và tìm giá trị của $x$ tương ứng làm cho $F(i)$ nhỏ nhất.
+	
+	Ta có công thức quy hoạch động cho $F(i)$ là:
+	
+	$F(0) = 0$.
+	
+	$F(i) = \min_{j: d_j \leq i}\{F(i - d_j)\} + 1$ với $i > 0$.
+	
+	Kết quả của bài toán gốc nằm ở $F(n)$.
+	
+	\subsection*{c. Thuật giải}
+		
+		// Input: Một mảng $d$ lưu giá trị của các đồng xu sắp xếp theo thứ tự tăng dần và đồng xu $n$ cần đổi.
+		
+		// Output: Số lượng đồng xu cần đổi là nhỏ nhất.
+		
+		\textbf{ChangeMaking}($D[1..m], n$)
+		\begin{enumerate}
+			\item $F[0] = 0;$
+			\item \textbf{for} $i$ = 1 \textbf{to} $n$ \textbf{do}
+			\item \qquad $temp = \infty ; j = 1;$
+			\item \qquad \textbf{while} $j \leq m$ \textbf{and} $i \geq D[j]$ \textbf{do}
+			\item \qquad \qquad $temp = \min(F[i - D[j]], temp)$;
+			\item \qquad \qquad $j = j + 1;$
+			\item \qquad $F[i] = temp + 1;$
+			\item \textbf{return} $F[n];$
+	\end{enumerate}
+	
+	\subsection*{d. VD minh họa}
+	
+		{\fontfamily{lmtt} \selectfont
+			\begin{center}
+				\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+					\hline
+					\textbf{INPUT} & \textbf{OUTPUT} \\
+					\hline
+					3 & 2 \\
+					1 3 4 & \\
+					6 & \\
+					\hline
+					
+					3 & 3 \\
+					1 3 5 & \\
+					9 & \\
+					\hline
+					
+					3 & 3 \\
+					1 5 10 & \\
+					12 & \\
+					\hline
+				\end{tabular}
+			\end{center}
+		}
+		
+	\subsection*{e. Độ phức tạp của thuật toán}
+		
+		Quá trình tính toán điền giá trị của mỗi $F[i]$ (trừ $F[0]$) có thời gian thực hiện là O$(m)$.
+		
+		Quá trình trên thực hiện $n$ lần nên độ phức tạp của hàm thời gian thực hiện chương trình là O$(nm)$.
+	
+	\clearpage
+	
+	\section*{Bài tập 11}
+	
+	\addcontentsline{toc}{section}{Bài tập 11}
+	
+	\textbf{TÍNH}
+	
+	$p[i][j] = {
+		\begin{cases}
+			1 & {i = 0; j > 0} \\
+			0 & {i > 0; j = 0} \\
+			\displaystyle \frac{1}{2} \cdot (p[i - 1][j] + p[i][j - 1]) & {i > 0; j > 0} \\
+		\end{cases}
+	}$
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Hai số nguyên không âm $m$ và $n$.
+	
+	\textbf{OUTPUT}
+	
+	Giá trị của $p(m, n)$ được tính theo công thức ở trên.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Ta có công thức quy hoạch động của $p(m, n)$ là:
+	
+	$p(m, n) = {
+		\begin{cases}
+		1 & {m = 0; n > 0} \\
+		0 & {m > 0; n = 0} \\
+		0.5 * [p(m - 1, n) + p(m, n - 1)] & {m > 0; n > 0} \\
+		\end{cases}
+	}$
+
+	Kết quả của bài toán gốc nằm ở $p(m, n)$.
+
+	\subsection*{c. Thuật giải}
+	
+	// Input: Hai số nguyên không âm $m$ và $n$.
+	
+	// Output: Giá trị của $p(m, n)$ được tính theo công thức quy hoạch động ở trên.
+	
+	\textbf{Tinh}($m, n$)
+	\begin{enumerate}
+		\item \textbf{for} $i = 0$ \textbf{to} $m$ \textbf{do}
+		\item \qquad \textbf{for} $j = 0$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \qquad \textbf{if} $i = 0$
+		\item \qquad \qquad \qquad $p[i, j] = 1$;
+		\item \qquad \qquad \textbf{else}
+		\item \qquad \qquad \qquad \textbf{if} $j = 0$
+		\item \qquad \qquad \qquad \qquad \qquad $p[i, j] = 0$;
+		\item \qquad \qquad \qquad \qquad \textbf{else}
+		\item \qquad \qquad \qquad \qquad \qquad $p[i, j] = 0.5 * (p[i - 1, j] + p[i, j - 1])$;
+		\item \textbf{return} $p[m, n];$
+	\end{enumerate}
+	
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				0 8 & 1 \\
+				\hline
+				
+				\hline
+				10 0 & 0 \\
+				\hline
+				
+				\hline
+				2 2 & 0.5 \\
+				\hline
+				
+				\hline
+				10 16 & 0.885239 \\
+				\hline
+				
+				\hline
+				25 24 & 0.442717 \\
+				\hline
+				
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Quá trình tính toán giá trị của mỗi $p[i, j]$ có thời gian thực hiện là O$(1)$.
+	
+	Quá trình trên thực hiện $(m + 1) \cdot (n + 1)$ lần nên độ phức tạp của hàm thời gian thực hiện chương trình là O$(mn)$.
+	
+	\clearpage
+	
+	\section*{Bài tập 12}
+	
+	\addcontentsline{toc}{section}{Bài tập 12}
+	
+	\textbf{SỐ CATALAN}
+	
+	Tính số catalan thứ $n$ theo công thức: $\displaystyle \sum_{i = 1}^{n - 1} T(i)T(n - i - 1)$; $n \in \mathbb{N^*}$.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	Trong toán tổ hợp, số Catalan là dãy các số tự nhiên xuất hiện nhiều trong các bài toán đếm, thường bao gồm những đối tượng đệ quy. Được đặt tên theo nhà toán học Đức Eugène Charles Catalan (1814 - 1894).
+	
+	Những số catalan đầu dãy $n = 0, 1, 2, 3, ...$ là: $1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, \\
+	58786, 208012, 742900, 2674440, ...$ \\
+	
+	\textbf{INPUT}
+	
+	Số nguyên dương $n$.
+	
+	\textbf{OUTPUT}
+	
+	Giá trị của số catalan thứ $n$.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i)$ là giá trị của số catalan thứ $i$. Ta có công thức quy hoạch động của $F(i)$ là:
+	
+	$F(i) = {
+		\begin{cases}
+		1 & {i \leq 1} \\
+		\displaystyle \sum_{j = 0}^{i - 1} F(j) * F(i - j - 1) & {i > 1, 0 < j < i} \\
+		\end{cases}
+	}$
+	
+	Kết quả của bài toán gốc nằm ở $F(n)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input: Số nguyên dương $n$.
+	
+	// Output: Giá trị của số catalan thứ $n$.
+	
+	\textbf{TinhCatalan}$(a[1..n])$
+	\begin{enumerate}
+		\item $F[0] = F[1] = 1$;
+		\item \textbf{for} $i = 2$ \textbf{to} $n$ \textbf{do}
+		\item \qquad $F[i] = 0$;
+		\item \qquad \textbf{for} $j = 0$ \textbf{to} $i - 1$ \textbf{do}
+		\item \qquad \qquad $F[i] = F[i] + (F[j] * F[i - j - 1])$;
+		\item \textbf{return} $F[n]$;
+	\end{enumerate}
+	
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				2 & 2 \\
+				\hline
+				
+				\hline
+				5 & 42 \\
+				\hline
+				
+				\hline
+				10 & 16796 \\
+				\hline
+				
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Độ phức tạp của hàm thời gian thực hiện chương trình là O$(n^2)$.
+	
+	\clearpage
+
+	\section*{Bài tập 13} 
+	
+	\textbf{DÃY CON GIẢM DẦN DÀI NHẤT (LONGEST DECREASING SUBSEQUENCE)}
+	
+	\addcontentsline{toc}{section}{Bài tập 13}
+	
+	Cho dãy số nguyên dương $a = (a_1, a_2, ..., a_n)$. Tìm trong $a$ một dãy con giảm dần dài nhất.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Dãy số nguyên dương $a = (a_1, a_2, ..., a_n)$.
+	
+	\textbf{OUTPUT}
+	
+	Độ dài của một dãy con giảm dần dài nhất có trong $a$.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i)$ là độ dài của dãy con giảm dần dài nhất của $a(i) = (a_1, a_2, ..., a_i)$. Để thiết lập công thức quy hoạch động cho $F(i)$, ta xét:
+	
+	$F(j)$ là độ dài của dãy con giảm dần dài nhất của $a(j) = (a_1, a_2, ..., a_j)$ trong $a(i) = (a_1, a_2, ..., a_j, ..., a_i)$.
+	
+	Nếu $a_i < a_j$ thì dãy con giảm dần của $a_i$ có thể bao gồm dãy con giảm dần dài nhất của $a(j)$ và phần tử $a_i$.
+	
+	Để dãy con đó giảm dần dài nhất thì ta sẽ tìm giá trị lớn nhất của độ dài dãy con đó ứng với mỗi giá trị $j$ từ 1 đến $i - 1$. 
+	
+	Do đó, $\displaystyle F(i) = \max_{0 < j < i}\{F(j)\} + 1$ nếu $a_i < a_j$.
+	
+	Ngược lại thì $F(i) = 1$.
+	
+	Kết quả của bài toán gốc nằm ở $\displaystyle \max_{0 < i \leq n} F(i)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input: Dãy số nguyên dương $a = (a_1, a_2, ..., a_n)$.
+	
+	// Output: Độ dài của một dãy con giảm dần dài nhất có trong $a$.
+	
+	\textbf{LDSLength}$(a[1..n])$
+	\begin{enumerate}
+		\item $max = 0$;
+		\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad $F[i] = 1$;
+		\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \textbf{for} $j = 1$ \textbf{to} $i - 1$ \textbf{do}
+		\item \qquad \qquad \textbf{if} $a_i < a_j$ \textbf{and} $F[i] < F[j] + 1$
+		\item \qquad \qquad \qquad $F[i] = F[j] + 1$;
+		\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \textbf{if} $max < F[i]$
+		\item \qquad \qquad $max = F[i]$;
+		\item \textbf{return} $max$;
+	\end{enumerate}
+
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {7 cm} | m {7 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				2 & 1 \\
+				10 16 & \\
+				\hline
+				
+				\hline
+				6 & 6 \\
+				98 67 54 33 23 1 & \\
+				\hline
+				
+				\hline
+				7 & 4 \\
+				5 0 2 4 3 8 1 & \\
+				\hline
+				
+				\hline
+				9 & 3 \\
+				15 26 13 36 62 55 45 64 80 & \\
+				\hline
+				
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Quá trình tính toán giá trị của mỗi $F[i]$ có thời gian thực hiện là O$(n)$.
+	
+	Quá trình trên thực hiện $n$ lần, cộng thêm quá trình duyệt mảng $F$ để tìm giá trị lớn nhất $max$ thì độ phức tạp của hàm thời gian thực hiện chương trình là O$(n^2)$. \\
+	
+	\textbf{Cách khác:} Có thể sử dụng lại ý tưởng của bài \textbf{CHUỖI CON CHUNG DÀI NHẤT (LONGEST COMMON SUBSEQUENCE)}, trong đó chuỗi đầu tiên là mảng ban đầu của bài toán, chuỗi thứ hai là mảng ban đầu sau khi sắp xếp các giá trị trong mảng theo thứ tự giảm dần.
+	
+	\clearpage
+	
+	\section*{Bài tập 14}
+	
+	\addcontentsline{toc}{section}{Bài tập 14}
+	
+	\textbf{DÃY CON KHÔNG GIẢM DÀI NHẤT (LONGEST NON-DECREASING SUBSEQUENCE)}
+	
+	Cho dãy số nguyên $a = (a_1, a_2, ..., a_n)$. Hãy xóa 1 số lượng ít nhất các số trong dãy sao cho dãy con còn lại (giữ nguyên thứ tự) là dãy không giảm.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Dãy số nguyên $a = (a_1, a_2, ..., a_n)$.
+	
+	\textbf{OUTPUT}
+	
+	Số lượng ít nhất các số cần xóa trong dãy sao cho dãy con còn lại là dãy không giảm.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Để tìm số lượng ít nhất các số cần xóa trong dãy sao cho dãy con còn lại là dãy không giảm, ta đi tìm độ dài dãy con không giảm dài nhất của dãy ban đầu.
+	
+	Sau đó lấy kích thước của dãy ban đầu trừ đi độ dài của dãy con không giảm dài nhất đó.
+	
+	Gọi $F(i)$ là độ dài của dãy con không giảm dài nhất của $a(i) = (a_1, a_2, ..., a_i)$. Để thiết lập công thức quy hoạch động cho $F(i)$, ta xét:
+	
+	$F(j)$ là độ dài của dãy con không giảm dài nhất của $a(j) = (a_1, a_2, ..., a_j)$ trong $a(i) = (a_1, a_2, ..., a_j, ..., a_i)$.
+	
+	Nếu $a_i \geq a_j$ thì dãy con không giảm của $a_i$ có thể bao gồm dãy con không giảm dài nhất của $a(j)$ và phần tử $a_i$.
+	
+	Để dãy con đó không giảm dài nhất thì ta sẽ tìm giá trị lớn nhất của độ dài dãy con đó ứng với mỗi giá trị $j$ từ 1 đến $i - 1$. 
+	
+	Do đó, $\displaystyle F(i) = \max_{0 < j < i}\{F(j)\} + 1$ nếu $a_i \geq a_j$.
+	
+	Ngược lại thì $F(i) = 1$.
+	
+	Kết quả của bài toán gốc được tính toán thông qua $n - \displaystyle \max_{0 < i \leq n} F(i)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input: Dãy số nguyên dương $a = (a_1, a_2, ..., a_n)$.
+	
+	// Output: Số lượng ít nhất các số cần xóa trong dãy sao cho dãy con còn lại là dãy không giảm.
+	
+	\textbf{LNDSLength}$(a[1..n])$
+	\begin{enumerate}
+		\item $max = 0$;
+		\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad $F[i] = 1$;
+		\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \textbf{for} $j = 1$ \textbf{to} $i$ \textbf{do}
+		\item \qquad \qquad \textbf{if} $a_i \geq a_j$ \textbf{and} $F[i] < F[j] + 1$
+		\item \qquad \qquad \qquad $F[i] = F[j] + 1$;
+		\item \textbf{for} $i = 1$ \textbf{to} $n$ \textbf{do}
+		\item \qquad \textbf{if} $max < F[i]$
+		\item \qquad \qquad $max = F[i]$;
+		\item \textbf{return} $n - max$;
+	\end{enumerate}
+
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {7 cm} | m {7 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				2 & 0 \\
+				10 16 & \\
+				\hline
+				
+				\hline
+				4 & 0 \\
+				2 5 5 9 & \\
+				\hline
+				
+				\hline
+				5 & 2 \\
+				5 6 1 7 4 & \\
+				\hline
+				
+				\hline
+				9 & 4 \\
+				30 40 2 5 1 7 45 50 8 & \\
+				\hline
+				
+			\end{tabular}
+		\end{center}
+	}
+
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Quá trình tính toán giá trị của mỗi $F[i]$ có thời gian thực hiện là O$(n)$.
+	
+	Quá trình trên thực hiện $n$ lần, cộng thêm quá trình duyệt mảng $F$ để tìm giá trị lớn nhất $max$ thì độ phức tạp của hàm thời gian thực hiện chương trình là O$(n^2)$. \\
+	
+	\textbf{Cách khác:} Có thể sử dụng lại ý tưởng của bài \textbf{CHUỖI CON CHUNG DÀI NHẤT (LONGEST COMMON SUBSEQUENCE)}, trong đó chuỗi đầu tiên là mảng ban đầu của bài toán, chuỗi thứ hai là mảng ban đầu sau khi sắp xếp các giá trị trong mảng theo thứ tự không giảm.
+	
+	\clearpage
+	
+	\section*{Bài tập 15}
+	
+	\addcontentsline{toc}{section}{Bài tập 15}
+	
+	\textbf{XẾP HÀNG MUA VÉ}
+	
+	Có $n$ người xếp hàng mua vé. Thời gian bán vé cho người thứ $i$ là $t_i$. Mỗi người mua tối thiểu 1 vé và được tối đa 2 vé, có thể mua vé cho người đứng sau mình. Người thứ $i$ mua vé hộ cho người thứ $i + 1$ thì thời gian mua vé cho 2 người là $p_i$. Xác định phương án sao cho $n$ người đều có vé với thời gian ít nhất.
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Một số nguyên dương $n$ thể hiện số lượng người xếp hàng mua vé.
+	
+	Thời gian bán vé riêng cho $n$ người.
+	
+	Thời gian bán vé cho người ở trước để mua vé hộ cho người tiếp theo.
+	
+	\textbf{OUTPUT}
+	
+	Tổng thời gian là ít nhất để $n$ người đều có vé.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	Gọi $F(i)$ là tổng thời gian ít nhất để hết $i$ người đều có vé. Để thiết lập công thức quy hoạch động cho $F(i)$, ta xét:
+
+	+ Trường hợp 1: Giả sử người thứ $i - 1$ mua vé hộ cho người thứ $i$ thì thời gian mua vé cho người thứ $i$ = thời gian bán vé cho người thứ $i - 1$ để mua vé hộ cho người thứ $i$ là $p(i - 1)$ + thời gian mua vé của những người trước người thứ $i - 1$ là $F(i - 2)$.
+	
+	+ Trường hợp 2: Giả sử người thứ $i - 1$ không mua vé hộ cho người thứ $i$, khi đó người thứ $i$ tự mua vé nên thời gian mua vé cho người thứ $i$ = thời gian bán vé cho người thứ $i$ là $t(i)$ + thời gian mua vé của những người trước người thứ $i$ là $F(i - 1)$.
+	
+	Ta lấy kết quả nhỏ nhất trong 2 trường hợp trên để được tổng thời gian ít nhất $F(i)$. Do đó, $F(i) = \min\{t(i) + F(i - 1), p(i - 1) + F(i - 2)\}$.
+	
+	Hiển nhiên, ta cũng có: $F(1) = t_1$.
+	
+	Kết quả của bài toán gốc nằm ở $F(n)$.
+	
+	\subsection*{c. Thuật giải}
+	
+	// Input:
+	
+	Một số nguyên dương $n$ thể hiện số lượng người xếp hàng mua vé.
+	
+	Một mảng $t$ lưu giá trị của thời gian bán vé riêng cho người thứ $i$ $(1 \leq i \leq n)$.
+	
+	Một mảng $p$ lưu giá trị của thời gian bán vé cho người $j$ để mua vé hộ cho người tiếp theo $j + 1$ $(1 \leq j \leq n - 1)$.
+	
+	// Output: Tổng thời gian là ít nhất để $n$ người đều có vé.	
+	
+	\textbf{MuaVe}($t[1..n], p[1..n - 1]$)
+	\begin{enumerate}
+		\item $F[1] = t[1];$
+		\item $F[2] =$ min$(t[1] + t[2], p[1])$;
+		\item \textbf{for} $i$ = 3 \textbf{to} $n$ \textbf{do}
+		\item \qquad $F[i] =$ min$(t[i] + F[i - 1], p[i - 1] + F[i - 2])$;
+		\item \textbf{return} $F[n]$;
+	\end{enumerate}
+	
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				4 & 9 \\
+				3 2 4 3 & \\
+				4 3 7 & \\
+				\hline
+				
+				5 & 18 \\
+				2 5 7 8 4 & \\
+				4 9 10 10  & \\
+				\hline
+				
+				4 & 24 \\
+				5 7 8 4 & \\
+				25 26 27 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+	Quá trình tính toán điền giá trị của mỗi $F[i]$ có thời gian thực hiện là O$(1)$.
+	
+	Quá trình trên thực hiện $n$ lần nên độ phức tạp của hàm thời gian thực hiện chương trình là O$(n)$.
+
+\end{document}
