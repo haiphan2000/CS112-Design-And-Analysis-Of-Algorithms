@@ -1,0 +1,680 @@
+\documentclass[12pt, a4paper, fleqn]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{cases}
+\usepackage{tabularx}
+
+\usepackage{scrextend}
+\changefontsizes{13pt}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{0.1cm}
+\setlength{\mathindent}{0pt}
+
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total = {160mm, 247mm},
+	left = 25mm,
+	top = 25mm,
+}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength\cftaftertoctitleskip{30pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{CS112.K11}
+\fancyhead[RE,LO]{\textit{[HW04.c] Phương pháp chia để trị}}
+\fancyfoot[CE,RO]{\thepage}
+
+\usepackage{enumitem}
+
+\begin{document}
+	
+	\begin{titlepage}
+		   %Vẽ đường viền
+		   \begin{tikzpicture}[overlay, remember picture]
+				%Vẽ đường viền màu xanh
+				\draw
+					[blue!70!black, line width = 6pt]
+					([xshift = -1.5cm, yshift = -2cm] current page.north east) coordinate (A) --
+					([xshift = 1.5cm, yshift = -2cm] current page.north west) coordinate(B) --
+					([xshift = 1.5cm, yshift = 2cm] current page.south west) coordinate (C) --
+					([xshift = -1.5cm, yshift = 2cm] current page.south east) coordinate(D) -- cycle;
+			
+				%Vẽ đường viền màu đen
+				\draw
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] B)--
+					([yshift = -0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = -0.2cm] B)--
+					([yshift = 0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = 0.2cm] A);
+			\end{tikzpicture}
+		
+		%Thiết kế nội dung cho phần bìa
+		\begin{center}
+			\textbf{TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN}
+			
+			\vspace*{0.2cm}
+
+			\textbf{KHOA KHOA HỌC MÁY TÍNH}
+			
+			\vspace*{0.2cm}
+			
+			\textbf{----------oOo----------}
+			
+			\vspace{1.5cm}
+			
+			\includegraphics[width=0.25\textwidth]{UIT_Logo}
+			
+			\vspace{1.5cm}
+			
+			\Large
+			\textbf{BÀI TẬP SỐ 04.c\\THIẾT KẾ GIẢI THUẬT\\PHƯƠNG PHÁP CHIA ĐỂ TRỊ}
+		
+		\end{center}
+			
+			\vspace{2.5cm}
+			\normalsize	
+			
+			\hspace{70pt} \textbf{\textit{Giảng viên hướng dẫn:}} ThS. Huỳnh Thị Thanh Thương\\
+			
+			\vspace*{1cm}
+			
+			\hspace{70pt} \textbf{\textit{Nhóm sinh viên:}}
+			
+			\vspace*{0.2cm}
+			
+			\hspace{70pt} 1. \hspace{10pt} Phạm Bá Đạt \hspace{60pt} 17520337
+			
+			\vspace*{0.2cm}
+			\hspace{70pt} 2. \hspace{10pt} Phan Thanh Hải  \hspace{45pt} 18520705
+			
+			\vspace{4cm}
+		
+		\begin{center}
+			\textbf{TP. HỒ CHÍ MINH, 16/12/2019}
+		\end{center}
+			
+	\end{titlepage}
+
+	%Làm trang mục lục	
+	\begin{center}
+		\tableofcontents
+	\end{center}
+	\clearpage
+	
+	\setlength{\abovedisplayskip}{5pt}
+	\setlength{\belowdisplayskip}{5pt}
+	
+	\setlist{noitemsep, topsep = 0pt, partopsep = 0pt, leftmargin = 0cm, labelindent = 0.1cm, itemindent = *}
+	
+	\section*{Bài tập 1}
+	
+		\addcontentsline{toc}{section}{Bài tập 1}
+	
+		\textbf{BÀI TOÁN TÌM MAX MIN}
+	
+		Tìm giá trị max, min trong đoạn $[l, r]$ của mảng $A$ có $n$ phần tử.
+		
+		\subsection*{a. Phát biểu bài toán}
+			Cho một mảng $A$ gồm $n$ các số nguyên $(n > 0)$. Cần tìm giá trị lớn nhất và giá trị nhỏ nhất của mảng $A$ trên một đoạn $[l, r]$, với điều kiện là $l \leq r$.
+				
+			\textbf{INPUT}
+			
+			Một mảng $A$ gồm $n$ các số nguyên $(n > 0)$.
+			
+			Hai số nguyên không âm $l$ và $r$ thể hiện vị trí bắt đầu và vị trí kết thúc duyệt mảng.
+			
+			\textbf{OUTPUT}
+			
+			Giá trị lớn nhất và giá trị nhỏ nhất của mảng $A$ trên một đoạn $[l, r]$.
+			
+		\subsection*{b. Ý tưởng giải}
+		
+			\textbf{Divide:} Chia đôi mảng ban đầu thành 2 đoạn con nhỏ hơn (kích thước bằng nhau). Quá trình chia này cứ tiếp tục cho đến khi đoạn con chỉ còn có 1 phần tử. Khi đó giá trị lớn nhất và giá trị nhỏ nhất cần tìm là chính phần tử đó.
+			
+			\textbf{Conquer:} Gọi đệ quy tìm giá trị nhỏ nhất và giá trị lớn nhất của mảng con.
+			
+			\textbf{Combine:} Cập nhật giá trị $max$ và $min$ của từ 2 mảng con.
+			
+		\subsection*{c. Thuật giải}
+		
+		Hàm sẽ không trả về trực tiếp giá trị của $min$ và $max$, mà thay vào đó sẽ thay đổi trực tiếp lên biến $min$ và $max$. Do đó tham số đầu vào của hàm \textbf{MinMax} có thêm biến $min$ và $max$, được truyền vào theo kiểu tham biến (pass by reference).
+		
+		{ \fontfamily{lmtt} \selectfont
+		\textbf{MinMax}(array[], left, right, \&min, \&max)
+		\begin{enumerate}
+			\item \textbf{if} left = right
+			\item \qquad min = max = arr[left];
+			\item mid = (left + right) / 2;
+			\item \textbf{MinMax}(array, left, mid, min, max);
+			\item \textbf{MinMax}(array, mid + 1, right, min1, max1);
+			\item \textbf{if} min1 < min
+			\item \qquad min = min1;
+			\item \textbf{if} max < max1
+			\item \qquad max = max1;
+		\end{enumerate}
+		}
+	
+	\subsection*{d. VD minh họa}
+	
+		{\fontfamily{lmtt} \selectfont
+			\begin{center}
+				\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+					\hline
+					\textbf{INPUT} & \textbf{OUTPUT} \\
+					\hline
+					1 & 10 \\
+					10 & 10 \\
+					0 0 & \\
+					\hline
+					
+					6 & 1 \\
+					1 2 3 4 5 6 & 5 \\
+					0 4 & \\
+					\hline
+					
+					6 & 4 \\
+					12 4 5 10 9 7 & 12 \\
+					0 5 & \\
+					\hline
+				\end{tabular}
+			\end{center}
+		}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+	
+		\begin{align*}
+			&T(n) = c_1, \text{if } n = 1\\
+			&T(n) = 2T\left(\frac{n}{2}\right) + c_2, \text{if } n \leq 2
+		\end{align*}
+	
+		Áp dụng định lý Master case 1, ta có: $T(n) = \Theta (n^{log_{2} {2}}) = \Theta (n)$
+	
+	\clearpage
+
+	\section*{Bài tập 2}
+	
+	\addcontentsline{toc}{section}{Bài tập 2}
+	
+	\textbf{MERGESORT}
+	
+	\subsection*{a. Phát biểu bài toán}
+	Cho một mảng $A$ gồm $n$ các số nguyên $(n > 0)$. Sắp xếp mảng $A$ theo thứ tự cho trước (cho cụ thể thì ta cần sắp xếp thứ tự tăng dần theo giá trị phần tử trong mảng).
+	
+	\textbf{INPUT}
+	
+	Một mảng $A$ gồm $n$ các số nguyên $(n > 0)$.
+	
+	\textbf{OUTPUT}
+	
+	Mảng $A$ gồm $n$ các số nguyên đã được sắp xếp tăng dần theo giá trị phần tử trong mảng.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	\textbf{Divide:} Chia đôi đoạn ban đầu thành 2 đoạn con nhỏ hơn (số lượng phần tử nhỏ hơn). Quá trình chia này cứ tiếp tục cho đến khi mảng con chỉ còn có 1 phần tử. Khi đó thì mảng đã được sắp xếp (theo thứ tự).
+	
+	\textbf{Conquer:} Gọi đệ quy sắp xếp mảng con.
+	
+	\textbf{Combine:} Sau khi sắp xếp 2 mảng con, ta cần trộn 2 mảng con thành 1 mảng mà vẫn đảm bảo thứ tự sắp xếp.
+	
+	Ý tưởng của việc trộn 2 mảng con (hàm \textbf{Merge}) đã sắp xếp là lần lượt duyệt từng phần tử trong 2 mảng con, nếu phần tử nào trong mảng con $A$ có giá trị nhỏ hơn trong phần tử trong mảng con $B$ thì ta đưa vào mảng chính và xét phần tử tiếp theo của mảng con $A$ (trường hợp tương tự nếu mảng con $B$ có giá trị phần tử đang xét nhỏ hơn giá trị đang xét trong mảng con $A$).
+	
+	Quá trình này tiếp tục cho đến khi xét hết mọi phần tử trong mảng con $A$ và mảng con $B$.
+	
+	\subsection*{c. Thuật giải}
+	
+	{ \fontfamily{lmtt} \selectfont
+		\textbf{MergeSort}(A[], left, right)
+		\begin{enumerate}
+			\item \textbf{if} left < right
+			\item \qquad min = (left + right) / 2;
+			\item \qquad \textbf{MergeSort}(A, left, mid);
+			\item \qquad \textbf{MergeSort}(A, mid + 1, right);
+			\item \qquad \textbf{Merge}(A, left, mid, right);
+		\end{enumerate}
+	}
+
+\subsection*{d. VD minh họa}
+
+{\fontfamily{lmtt} \selectfont
+	\begin{center}
+		\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+			\hline
+			\textbf{INPUT} & \textbf{OUTPUT} \\
+			\hline
+			1 & 10 \\
+			10 & \\
+			\hline
+			
+			6 & 1 2 3 4 5 6 \\
+			1 2 3 4 5 6 & \\
+			\hline
+			
+			6 & 1 2 3 5 9 10 \\
+			3 10 9 2 1 5 & \\
+			\hline
+		\end{tabular}
+	\end{center}
+}
+	
+	\subsection*{e. Độ phức tạp của thuật toán}
+		Quá trình trộn 2 mảng con thực chất là quá trình duyệt 2 mảng con nên thời gian thực hiện là $O(n)$.		
+		\begin{align*}
+			&T(n) = c_1, \text{if } n = 1\\
+			&T(n) = 2T\left(\frac{n}{2}\right) + c_2 n, \text{if } n \leq 2
+		\end{align*}
+	
+		Áp dụng định lý Master case 2, ta có: $T(n) = \Theta (n \log n)$
+	
+	\clearpage
+	
+	\section*{Bài tập 3}
+	
+	\addcontentsline{toc}{section}{Bài tập 3}
+	
+	\textbf{QUICKSORT}
+	
+	\subsection*{a. Phát biểu bài toán}
+	Cho một mảng $A$ gồm $n$ các số nguyên $(n > 0)$. Sắp xếp mảng $A$ theo thứ tự cho trước (cho cụ thể thì ta cần sắp xếp thứ tự tăng dần theo giá trị phần tử trong mảng).
+	
+	\textbf{INPUT}
+	
+	Một mảng $A$ gồm $n$ các số nguyên $(n > 0)$.
+	
+	\textbf{OUTPUT}
+	
+	Mảng $A$ gồm $n$ các số nguyên đã được sắp xếp tăng dần theo giá trị phần tử trong mảng.
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	\textbf{Divide:} Chọn một phần tử trung vị $A[pivot]$ bất kỳ trong mảng. Cần phân hoạch các phần tử còn lại trong mảng sao cho những phần tử bên trái phần tử trung vị $(A[0]..A[pivot - 1])$ có giá trị nhỏ hơn hoặc bằng $A[pivot]$, và những phần tử bên phải phần tử trung vị $(A[pivot + 1]..A[n - 1])$ có giá trị lớn hơn $A[pivot]$.
+	
+	\textbf{Conquer:} Gọi đệ quy sắp xếp mảng con.
+	
+	\textbf{Combine:} Không cần tổng hợp kết quả vì quá trình sắp xếp đã diễn ra tường minh trong khâu phân hoạch.
+	
+	\subsection*{c. Thuật giải}
+	
+	{ \fontfamily{lmtt} \selectfont
+		\textbf{QuickSort}(A[], left, right)
+		\begin{enumerate}
+			\item \textbf{if} left < right
+			\item \qquad pivot $\leftarrow$ \textbf{Partition}(A, left, right);
+			\item \qquad \textbf{QuickSort}(A, left, mid - 1);
+			\item \qquad \textbf{QuickSort}(A, mid + 1, right);
+		\end{enumerate}
+	
+		\textbf{Partition}(A[], left, right)
+		\begin{enumerate}
+			\item x = A[right];
+			\item i = left - 1;
+			\item \textbf{for} j = left \textbf{to} right - 1
+			\item \qquad \textbf{if} A[j] $\leq$ x;
+			\item \qquad \qquad i = i + 1;
+			\item \qquad \qquad Hoán vị phần tử A[i] với A[j];
+			\item Hoán vị phần tử A[i + 1] với A[r];
+			\item \textbf{return} i + 1;
+		\end{enumerate}
+	}
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				1 & 10 \\
+				10 & \\
+				\hline
+				
+				6 & 1 2 3 4 5 6 \\
+				1 2 3 4 5 6 & \\
+				\hline
+				
+				6 & 1 2 3 5 9 10 \\
+				3 10 9 2 1 5 & \\
+				\hline
+			\end{tabular}
+		\end{center}
+	}
+	
+	\clearpage
+
+	\section*{Bài tập 4}
+	
+	\addcontentsline{toc}{section}{Bài tập 4}
+
+\textbf{BÀI TOÁN SẮP HẠNG TRONG KHÔNG GIAN 2D}
+
+\subsection*{a. Phát biểu bài toán}
+
+\textbf{INPUT}
+
+Một mảng $S$ gồm $n$ các điểm $(n > 0)$. Mỗi điểm được biểu diễn bởi các thông tin hoành độ, tung độ trong hệ trục tọa độ 2D và hạng của nó (ban đầu bằng 0).
+
+\textbf{OUTPUT}
+
+Hạng của các điểm lần lượt có trong mảng $S$.
+
+\subsection*{b. Ý tưởng giải}
+
+\textbf{Bước 1:} Chia không gian cần xếp hạng ra làm 2 với kích thước giảm một nửa
+
+a. Nếu tập $S$ chỉ có 1 một phần tử thì rank của điểm đó là 0.
+
+b. Ngược lại, ta chia không gian ra làm 2 không gian con (chia theo trục hoành).
+
+
+\textbf{Bước 2:}
+Gọi đệ quy xếp hạng các điểm trong 2 không gian con.
+
+\textbf{Bước 3:}
+Kết quả xếp hạng các điểm của không gian A không cần tổng hợp bởi vì kết quả đã quá tường minh.
+Kết quả xếp hạng các điểm của không gian B = kết quả xếp hạng của điểm đó trong không gian B + số điểm trong không gian A mà giá trị tung độ nhỏ giá trị tung độ của điểm đang xét trong không gian B.
+
+\subsection*{c. Thuật giải}
+
+{ \fontfamily{lmtt} \selectfont
+	\textbf{SapXepTheoHoanhDoTangDan}(S, n);\\
+	\textbf{XepHang}(S, n, left, right)
+	\begin{enumerate}
+		\item \textbf{if} left = right
+		\item \qquad rank[left] = 0;
+		\item mid = (left + right) / 2;
+		\item \textbf{XepHang}(S, n/2, left, mid);
+		\item \textbf{XepHang}(S, n/2, mid + 1, right);
+		\item \textbf{for} i = mid + 1 \textbf{to} r
+		\item \qquad \textbf{for} j = left \textbf{to} mid
+		\item \qquad \qquad \textbf{if} S[i].tung > S[j].tung
+		\item \qquad \qquad \qquad rank[i]++;
+	\end{enumerate}
+}
+
+\subsection*{d. VD minh họa}
+
+{\fontfamily{lmtt} \selectfont
+	\begin{center}
+		\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+			\hline
+			\textbf{INPUT} & \textbf{OUTPUT} \\
+			\hline
+			5 & 2 \\
+			961 404 & 1 \\
+			640 145 & 4 \\
+			983 888 & 0 \\
+			539 71 & 0 \\
+			437 532 & \\
+			\hline
+			
+			5 & 0 \\
+			1 4 & 0 \\
+			6 2 & 0 \\
+			8 0 & 1 \\
+			2 7 & 2 \\
+			7 5 & \\
+			\hline
+			
+			7 & 4 \\
+			1 2 & 2 \\
+			-3 - 4 & 5 \\
+			5 6 & 0 \\
+			-7 -8 & 5 \\
+			3 7 & 0 \\
+			-5 -9 & 3 \\
+			0 0 & \\
+			\hline
+			
+		\end{tabular}
+	\end{center}
+}
+
+\subsection*{e. Độ phức tạp của thuật toán}
+Quá trình sắp xếp các điểm, nếu ta sử dụng thuật toán hiệu quả như MergeSort thì thời gian thực hiện là $O(n \log n)$.
+Quá trình duyệt các điểm trong không gian A và B để xếp hạng các điểm trong không gian B có thời gian thực hiện là $O(n)$.
+\begin{align*}
+&T(n) = c_1, \text{if } n = 1\\
+&T(n) = 2T\left(\frac{n}{2}\right) + c_2 n \log n + c_3 n, \text{if } n \leq 2
+\end{align*}
+
+Áp dụng định lý Master, ta có: $T(n) = \Theta (n \log^{2} n)$
+
+\clearpage
+
+	\section*{Bài tập 5}
+	
+	\addcontentsline{toc}{section}{Bài tập 5}
+	
+	\textbf{BÀI TOÁN VẠCH THƯỚC (DRAWING A RULER)}
+	
+	Cho một cây thước có độ dài $l$ và một chiều cao $h$ nguyên cho trước.
+	
+	Tại vị trí chính giữa của cây thước, vạch một vạch có chiều cao $h$.
+	
+	Tại vị trí 1/4 và 3/4 của cây thước, vạch một vạch có chiều cao $h - 1$.
+	
+	Tại vị trí 1/8, 3/8, 5/8, và 7/8 của cây thước, vạch một vạch có chiều cao $h - 2$.
+	
+	...
+	
+	Cho đến khi không thể vạch được nữa (chiều của vạch bằng 0).
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Một số nguyên dương $l$ là độ dài của cây thước.
+	Một số nguyên dương $h (h \leq l)$ là độ cao của vạch ban đầu.
+	
+	\textbf{OUTPUT}
+	
+	Xuất ra tọa độ tương ứng của vạch và độ cao của vạch đó
+	
+	\subsection*{b. Ý tưởng giải}
+	
+	\textbf{Divide:} Chia cây thước ra làm 2 phần có độ dài bằng nhau, là cây thước con bên trái và phải.
+	
+	\textbf{Conquer:} Gọi đệ quy kẻ vạch cho cây thước con bên trái và phải.
+	
+	\textbf{Combine:} Sau khi đã kẻ vạch xong cho cây thước con bên trái và phải, ta tiến hành kẻ vạch vào chính giữa cây thước.
+	
+	\subsection*{c. Thuật giải}
+	
+	{ \fontfamily{lmtt} \selectfont
+		\textbf{DrawingARuler}(left, right, length, height)
+		\begin{enumerate}
+			\item \textbf{if} height = 0
+			\item \qquad \textbf{return};
+			\item mid = (left + right) / 2;
+			\item \textbf{DrawingARuler}(left, mid, length / 2, height - 1);
+			\item \textbf{DrawingALine}(mid, height);
+			\item \textbf{DrawingARuler}(mid, right, length / 2, height - 1);
+		\end{enumerate}
+	}
+	
+	\subsection*{d. VD minh họa}
+	
+	{\fontfamily{lmtt} \selectfont
+		\begin{center}
+			\begin{tabular}{ | m {5 cm} | m {5 cm} | } 
+				\hline
+				\textbf{INPUT} & \textbf{OUTPUT} \\
+				\hline
+				1 & 0.5 1 \\
+				1 & \\
+				\hline
+				
+				4 & 0.5 1 \\
+				3 & 1 2 \\
+				 & 1.5 1 \\
+				 & 2 3 \\
+				 & 2.5 1 \\
+				 & 3 2 \\
+				 & 3.5 1 \\
+				\hline
+				
+			\end{tabular}
+		\end{center}
+	}
+
+\subsection*{e. Độ phức tạp của thuật toán}
+
+\begin{align*}
+&T(n) = c_1, \text{if } n = 1\\
+&T(n) = 2T\left(\frac{n}{2}\right) + c_2, \text{if } n \leq 2
+\end{align*}
+
+Áp dụng định lý Master case 2, ta có: $T(n) = \Theta (n \log n)$
+	
+	\clearpage
+	
+	\section*{Bài tập 6}
+	
+	\addcontentsline{toc}{section}{Bài tập 6}
+	
+	\textbf{BÀI TOÁN NHÂN 2 SỐ NGUYÊN LỚN}
+	
+	\subsection*{a. Phát biểu bài toán}
+	
+	\textbf{INPUT}
+	
+	Hai số nguyên lớn $X$ và $Y$ có cùng $n$ chữ số.
+	
+	\textbf{OUTPUT}
+	
+	Tích hai số nguyên lớn $X$ và $Y$.
+	
+	\subsection*{b. Thuật giải}
+	{ \fontfamily{lmtt} \selectfont
+		\textbf{NhanSoNguyen}(A, B, n)
+		\begin{enumerate}
+			\item \textbf{if} n = 1
+			\item \qquad \textbf{return} A * B;
+			\item A1 $\leftarrow$ TachNuaDau(A, n/2);
+			\item A0 $\leftarrow$ TachNuaSau(A, n/2);
+			\item B1 $\leftarrow$ TachNuaDau(B, n/2);
+			\item B0 $\leftarrow$ TachNuaSau(B, n/2);
+			\item C3 $\leftarrow$ \textbf{NhanMaTran}(A1, B1, n/2);
+			\item C2 $\leftarrow$ \textbf{NhanSoNguyen}(A1, B0, n/2);
+			\item C1 $\leftarrow$ \textbf{NhanSoNguyen}(A0, B1, n/2);
+			\item C0 $\leftarrow$ \textbf{NhanSoNguyen}(A0, B0, n/2);
+\item \textbf{return} C3 * $10^n$ + (C2 + C1) * $10^{n/2}$ + C0;
+		\end{enumerate}
+	}
+	
+	Từ dòng 3 đến dòng 10, thời gian thực hiện phép toán là tuyến tính. Từ dòng 11 đến 18, ta gọi 8 lần đệ quy hàm \textbf{NhanMaTran} với kích thước giảm đi một nửa. Chi phí tổng hợp kết quả từ dòng 19 đến dòng 22 là $\Theta (n^2)$. Vậy phương trình thời gian của thuật toán trên có dạng:
+	
+	$$T(n) = 4T\left(\frac{n}{2}\right) + \Theta (n)$$
+	
+	Áp dụng định lý Master case 1, ta có: $T(n) = \Theta (n^{log_{2} {4}}) = \Theta (n^2)$
+	
+	Cải tiến:
+	
+	{ \fontfamily{lmtt} \selectfont
+		\textbf{NhanSoNguyen}(A, B, n)
+		\begin{enumerate}
+			\item \textbf{if} n = 1
+			\item \qquad \textbf{return} A * B;
+			\item A1 $\leftarrow$ TachNuaDau(A, n/2);
+			\item A0 $\leftarrow$ TachNuaSau(A, n/2);
+			\item B1 $\leftarrow$ TachNuaDau(B, n/2);
+			\item B0 $\leftarrow$ TachNuaSau(B, n/2);
+			\item C2 $\leftarrow$ \textbf{NhanSoNguyen}(A1, B1, n/2);
+			\item C0 $\leftarrow$ \textbf{NhanSoNguyen}(A0, B0, n/2);
+			\item C1 $\leftarrow$ \textbf{NhanSoNguyen}(A1 + A0, B1 + B0, n/2) - (C2 + C0);
+			\item \textbf{return} C2 * $10^n$ + C1 * $10^{n/2}$ + C0;
+		\end{enumerate}
+	}
+	
+	Chứng minh:
+	\begin{align*}
+	c_1 &= (a_1 + a_0) * (b_1 + b_0) - (c_2 + c_0)\\
+	&= (a_1 + a_0) * (b_1 + b_0) - (a_1 * b_1 + a_0 * b_0)\\
+	&= a_1 * b_1 + a_1 * b_0 + a_0 * b_1 + a_0 * b_0 - a_1 * b_1 - a_0 * b_0\\
+	&= a_1 * b_0 + a_0 * b_1
+	\end{align*}  
+	
+	\begin{align*}
+	&T(n) = 3T\left(\frac{n}{2}\right) + c_2 n
+	\end{align*}
+	
+	Áp dụng định lý Master case 2, ta có: $T(n) = \Theta (n^{log_{2} {3}}) = \Theta (n^{2.81})$
+	
+	\clearpage
+
+	\section*{Bài tập 7}
+	
+	\addcontentsline{toc}{section}{Bài tập 7}
+	
+	\textbf{SỐ CHÍNH PHƯƠNG}
+	
+	Bài toán tìm tất cả các số chính phương trong một danh sách các số nguyên cho trước.
+	
+	a. Viết hàm kiểm tra số chính phương.
+	
+	b. Áp dụng chia để trị để viết thuật toán tìm tất cả các số chính phương.
+	
+	c. Phân tích độ phức tạp của thuật toán tìm tất cả các số chính phương.
+	
+	{ \fontfamily{lmtt} \selectfont
+		\textbf{TimChinhPhuong}(A, n, left, right)
+		\begin{enumerate}
+			\item \textbf{if} left = right
+			\item \qquad \textbf{if} KiemTraChinhPhuong(left) = true
+			\item \qquad Xuat(A[left]);
+			\item mid = (left + right) / 2;
+			\item \textbf{TimChinhPhuong}(A, n/2, left, mid);
+			\item \textbf{TimChinhPhuong}(A, n/2, mid + 1, right);
+		\end{enumerate}
+		
+		\textbf{KiemTraChinhPhuong}(n)
+		\begin{enumerate}
+			\item \textbf{for} i = 2 \textbf{to} n/2
+			\item \qquad \textbf{if} i*i = n;
+			\item \qquad \qquad \textbf{return true};
+			\item \textbf{return false};
+		\end{enumerate}
+	}
+	
+	\clearpage
+	
+	\section*{Bài tập 8}
+	
+	\addcontentsline{toc}{section}{Bài tập 8}
+	
+	\textbf{ĐẾM SỐ NGHỊCH THẾ (COUNTING INVERSIONS)}
+	
+	Cho một mảng $A$ gồm $n$ các số nguyên $(n > 0)$. Hai số $A[i]$ và $A[j]$ được gọi là nghịch thế nếu $A[i] > A[j]$ với $i < j$. Đếm số nghịch thế có trong mảng $A$.
+	
+\end{document}
