@@ -1,0 +1,912 @@
+\documentclass[12pt, a4paper, fleqn]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{scrextend}
+\changefontsizes{13pt}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0em}
+\setlength{\mathindent}{0pt}
+
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total = {160mm, 247mm},
+	left = 25mm,
+	top = 25mm,
+}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength\cftaftertoctitleskip{30pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{CS112.K11}
+\fancyhead[RE,LO]{\textit{[HW03.b] Phương pháp đoán nghiệm và định lý Master}}
+\fancyfoot[CE,RO]{\thepage}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{tikz-qtree}
+\usetikzlibrary{trees,calc,arrows.meta,positioning,decorations.pathreplacing,bending}
+
+\usepackage{adjustbox}
+
+\tikzset{
+    no edge from this parent/.style={
+        every child/.append style={
+        edge from parent/.style={draw=none}}},
+}
+
+\begin{document}
+	
+	\begin{titlepage}
+		   %Vẽ đường viền
+		   \begin{tikzpicture}[overlay, remember picture]
+				%Vẽ đường viền màu xanh
+				\draw
+					[blue!70!black, line width = 6pt]
+					([xshift = -1.5cm, yshift = -2cm] current page.north east) coordinate (A) --
+					([xshift = 1.5cm, yshift = -2cm] current page.north west) coordinate(B) --
+					([xshift = 1.5cm, yshift = 2cm] current page.south west) coordinate (C) --
+					([xshift = -1.5cm, yshift = 2cm] current page.south east) coordinate(D) -- cycle;
+			
+				%Vẽ đường viền màu đen
+				\draw
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] B)--
+					([yshift = -0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = -0.2cm] B)--
+					([yshift = 0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = 0.2cm] A);
+			\end{tikzpicture}
+		
+		%Thiết kế nội dung cho phần bìa
+		\begin{center}
+			\textbf{TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN}
+			
+			\vspace*{0.2cm}
+
+			\textbf{KHOA KHOA HỌC MÁY TÍNH}
+			
+			\vspace*{0.2cm}
+			
+			\textbf{----------oOo----------}
+			
+			\vspace{2cm}
+			
+			\includegraphics[width=0.25\textwidth]{UIT_Logo}
+			
+			\vspace{2cm}
+			
+			\Large
+			\textbf{[HW03.b] PHƯƠNG PHÁP ĐOÁN NGHIỆM VÀ ĐỊNH LÝ MASTER}
+		
+		\end{center}
+			
+			\vspace{3cm}
+			\normalsize	
+			
+			\hspace{70pt} \textbf{\textit{Giảng viên hướng dẫn:}} ThS. Huỳnh Thị Thanh Thương\\
+			
+			\vspace*{1cm}
+			
+			\hspace{70pt} \textbf{\textit{Nhóm sinh viên:}}
+			
+			\vspace*{0.2cm}
+			
+			\hspace{70pt} 1. \hspace{10pt} Phạm Bá Đạt \hspace{60pt} 17520337
+			
+			\vspace*{0.2cm}
+			\hspace{70pt} 2. \hspace{10pt} Phan Thanh Hải  \hspace{45pt} 18520705
+			
+			\vspace{4cm}
+		
+		\begin{center}
+			\textbf{TP. HỒ CHÍ MINH, 05/11/2019}
+		\end{center}
+			
+	\end{titlepage}
+
+	%Làm trang mục lục	
+	\begin{center}
+		\tableofcontents
+	\end{center}
+	\clearpage
+	
+	\setlength{\abovedisplayskip}{5pt}
+	\setlength{\belowdisplayskip}{5pt}
+	
+	\section*{Bài tập 1}
+		Giải các phương trình sau bằng phương pháp đoán nghiệm (có thể dùng định lý Master để đoán nghiệm nếu cần)
+		
+		\begin{center}
+			\textbf{\underline{Bài làm:}}
+		\end{center}
+	
+		\subsection*{a.}
+			$\displaystyle
+			T(n) = 2T\left( \frac{n}{2} \right) + n^2\\
+			T(1) = 1$\\
+			
+			Đặt $f(n) = an^2$\\
+			Với $n = 1$ thì $T(n) \leq f(n)$ \hspace{100pt} (*)\\
+			$\Leftrightarrow  T(1) \leq a$\\
+			$\Rightarrow$ Nếu $a\geq 1$ thì (*) được thỏa.\\
+			Giả sử $T(k) \leq f(k) \quad \forall k < n$.\\
+			Chứng minh $T(n) \leq f(n)$.\\
+			Ta có:
+			\begin{align*}
+				T(n) = 2T\left( \frac{n}{2} \right) + n^2 &\leq 2f\left( \frac{n}{2}\right) + n^2\\
+				&= \frac{1}{2} an^2 + n^2\\
+				&= \left( \frac{1}{2} a + 1 \right) n^2
+			\end{align*}
+			Nếu ta chọn $a \geq 2$ thì: $T(n) \leq an^2 = f(n)$\\
+			Vậy nếu ta chọn $a = 2$ thì $T(n) \leq 2n^2$.\\
+			Vậy $T(n) = O(n^2)$.
+		
+		\subsection*{b.}
+			$\displaystyle
+			T(n) = n + 4T\left( \frac{n}{2}\right)\\
+			T(1) = 1$\\
+			
+			Đặt $f(n) = an^2 - bn$\\
+			Với $n = 1$ thì $T(n) \leq f(n)$ \hspace{100pt} (*)\\
+			$\Leftrightarrow  T(1) \leq a - b$\\
+			$\Rightarrow$ Nếu $a - b\geq 1$ thì (*) được thỏa.\\
+			Giả sử $T(k) \leq f(k) \quad \forall k < n$.\\
+			Chứng minh $T(n) \leq f(n)$.\\
+			Ta có:
+			\begin{align*}
+			T(n) = 4T\left( \frac{n}{2} \right) + n &\leq 4f\left( \frac{n}{2}\right) + n\\
+			&= an^2 - 2bn + n\\
+			&= an^2 - (2b - 1)n
+			\end{align*}
+			Nếu ta chọn $b \geq 1$ thì: $T(n) \leq an^2 - bn = f(n)$\\
+			Vậy nếu ta chọn $a = 2, b = 1$ thì $T(n) \leq 2n^2 - n$.\\
+			Vậy $T(n) = O(n^2)$.
+		
+		\subsection*{c.}
+			$\displaystyle
+			T(n) = 9T\left( \frac{n}{4} \right) + n^2\\
+			T(1) = 1$\\
+			
+			Đặt $f(n) = an^2$\\
+			Với $n = 1$ thì $T(n) \leq f(n)$ \hspace{100pt} (*)\\
+			$\Leftrightarrow  T(1) \leq a$\\
+			$\Rightarrow$ Nếu $a \geq 1$ thì (*) được thỏa.\\
+			Giả sử $T(k) \leq f(k) \quad \forall k < n$.\\
+			Chứng minh $T(n) \leq f(n)$.\\
+			Ta có:
+			\begin{align*}
+			T(n) = 9T\left( \frac{n}{4} \right) + n^2 &\leq 9f\left( \frac{n}{4}\right) + n^2\\
+			&= \frac{9}{16} an^2 + n^2\\
+			&= \left( \frac{9}{16} a + 1 \right) n^2
+			\end{align*}
+			Nếu ta chọn $a \geq \displaystyle \frac{16}{7}$ thì: $T(n) \leq an^2 = f(n)$\\
+			Vậy nếu ta chọn $a = \displaystyle \frac{16}{7}$ thì $T(n) \leq \displaystyle \frac{16}{7}n^2$.\\
+			Vậy $T(n) = O(n^2)$.
+	
+	\addcontentsline{toc}{section}{Bài tập 1}
+	
+	\clearpage
+	
+	\section*{Bài tập 2}
+		Giải phương trình sau bằng phương pháp đoán nghiệm:
+		
+		$\displaystyle
+		T(n) = T\left( \frac{n}{2} \right) + T\left( \frac{n}{4} \right) + n$\\
+		$T(m) = 1$ với $m \leq 5$
+		
+		\begin{center}
+			\textbf{\underline{Bài làm:}}
+		\end{center}
+	
+		Đặt $f(n) = an$\\
+		Với $n = 1$ thì $T(n) \leq f(n)$ \hspace{100pt} (*)\\
+		$\Leftrightarrow  T(1) \leq a$\\
+		$\Rightarrow$ Nếu $a \geq 1$ thì (*) được thỏa.\\
+		Giả sử $T(k) \leq f(k) \quad \forall k < n$.\\
+		Chứng minh $T(n) \leq f(n)$.\\
+		Ta có:\
+		\begin{align*}
+		T(n) = T\left( \frac{n}{2} \right) + T\left( \frac{n}{4} \right) + n &\leq f\left( \frac{n}{2}\right) + f\left( \frac{n}{4}\right) + n\\
+		&= \frac{1}{2} an + \frac{1}{4} an + n\\
+		&= \left( \frac{3a}{4} + 1 \right) n
+		\end{align*}
+		Nếu ta chọn $\displaystyle \frac{3a}{4} + 1 \leq a$ hay $a \geq 4$ thì: $T(n) \leq an = f(n)$\\
+		Vậy nếu ta chọn $a = 4$ thì $T(n) \leq 4n$.\\
+		Vậy $T(n) = O(n)$.
+	
+	\addcontentsline{toc}{section}{Bài tập 2}
+	
+	\clearpage
+	
+	\section*{Bài tập 3}
+		Cho phương trình đệ quy:\\
+		$\displaystyle
+		T(1) = \Theta (1)\\
+		T(n) = 4T\left( \frac{n}{2} \right) + n$ nếu $n \geq 2$\\
+		Một người dùng phương pháp đoán nghiệm để giải phương trình đệ quy trên. Giả sử anh ta lần lượt đoán 3 nghiệm như sau:\\
+		$f(n) = cn^3\\
+		f(n) = cn^2\\
+		f(n) = c_1n^2 - c_2n$\\
+		Theo bạn, lần đoán nào thành công, thất bại và vì sao? (Gợi ý: thử đoán như anh ta)
+		
+		\begin{center}
+			\textbf{\underline{Bài làm:}}
+		\end{center}
+	
+		Gọi $T(1) = \Theta (1) = k$ (k là một hằng số).\\
+		
+		\underline{$f(n) = cn^3$}\\
+		Với $n = 1$ thì $T(n) \leq f(n)$ \hspace{100pt} (*)\\
+		$\Leftrightarrow  T(1) \leq c$\\
+		$\Rightarrow$ Nếu $c \geq k$ thì (*) được thỏa.\\
+		Giả sử $T(k) \leq f(k) \quad \forall k < n$.\\
+		Chứng minh $T(n) \leq f(n)$.\\
+		Ta có:
+		\begin{align*}
+		T(n) = 4T\left( \frac{n}{2} \right) + n &\leq 4f\left( \frac{n}{2}\right) + n\\
+		&= \frac{1}{2} cn^3 + n\\
+		&\leq \frac{1}{2} cn^3 + n^3 \text{ với } n \geq 1\\
+		&= \left( \frac{1}{2} c + 1 \right) n^3
+		\end{align*}
+		Nếu ta chọn $c \geq 2$ thì: $T(n) \leq cn^3 = f(n)$\\
+		Vậy nếu ta chọn $c = 2$ thì $T(n) \leq 2n^3$.\\
+		Do đó $T(n) = O(n^3)$.\\
+		
+		\underline{$f(n) = cn^2$}\\
+		Với $n = 1$ thì $T(n) \leq f(n)$ \hspace{100pt} (*)\\
+		$\Leftrightarrow  T(1) \leq c$\\
+		$\Rightarrow$ Nếu $c \geq k$ thì (*) được thỏa.\\
+		Giả sử $T(k) \leq f(k) \quad \forall k < n$.\\
+		Chứng minh $T(n) \leq f(n)$.\\
+		Ta có:
+		\begin{align*}
+		T(n) = 4T\left( \frac{n}{2} \right) + n &\leq 4f\left( \frac{n}{2}\right) + n\\
+		&= cn^2 + n\\
+		&\leq cn^2 + n^2 \text{ với } n \geq 1
+		\end{align*}
+		Không chọn $c$ được!\\
+		
+		\underline{$f(n) = c_1n^2 - c_2n$}\\
+		Với $n = 1$ thì $T(n) \leq f(n)$ \hspace{100pt} (*)\\
+		$\Leftrightarrow  T(1) \leq c_1 - c_2$\\
+		$\Rightarrow$ Nếu $c_1 - c_2 \geq k$ thì (*) được thỏa.\\
+		Giả sử $T(k) \leq f(k) \quad \forall k < n$.\\
+		Chứng minh $T(n) \leq f(n)$.\\
+		Ta có:
+		\begin{align*}
+		T(n) = 4T\left( \frac{n}{2} \right) + n &\leq 4f\left( \frac{n}{2}\right) + n\\
+		&= c_1n^2 - 2c_2n + n\\
+		&= c_1n^2 - (2c_2 - 1) n
+		\end{align*}
+		Nếu ta chọn $c_2 \geq 1$ thì: $T(n) \leq c_1n^2 - c_2n = f(n)$\\
+		Vậy nếu ta chọn $c_1 = k + 1, c_2 = 1$ thì $T(n) \leq (k + 1)n^2 - n$.\\
+		Vậy $T(n) = O(n^2)$.
+		
+	\addcontentsline{toc}{section}{Bài tập 3}
+	
+	\clearpage
+	
+	\section*{Bài tập 4}
+		Dùng phương pháp đoán nghiệm để chứng minh độ phức tạp $\Omega$ của $T(n)$
+		$$T(n) = 4T\left( \frac{n}{2} \right) + n^2 \qquad\qquad\qquad T(1) = 1$$
+		Gợi ý: $T(n) = \Omega (n^2 \log n)$ và dùng quy nạp chứng tỏ rằng $T(n) \geq f(n) \quad \forall n$
+		
+		\begin{center}
+			\textbf{\underline{Bài làm:}}
+		\end{center}
+		
+		$f(n) = an^2 \log n$\\
+		Với $n = 1$ thì $T(n) \geq f(n)$ \hspace{100pt} (*)\\
+		$\Leftrightarrow  T(1) \geq 0$\\
+		$\Rightarrow$ Vậy (*) luôn được thỏa.\\
+		Giả sử $T(k) \geq f(k) \quad \forall k < n$.\\
+		Chứng minh $T(n) \geq f(n)$.\\
+		Ta có:\
+		\begin{align*}
+		T(n) = 4T\left( \frac{n}{2} \right) + n^2 &\geq 4f\left( \frac{n}{2} \right) + n^2\\
+		&= 4a \left( \frac{n}{2} \right) ^ 2 \log \frac{n}{2} + n^2\\
+		&= an^2 \log n - an^2 \log 2 + n^2\\
+		&= an^2 \log n + (1 - a)n^2
+		\end{align*}
+		Nếu ta chọn $a \leq 1$ thì: $T(n) \geq an^2 \log n = f(n)$\\
+		Vậy nếu ta chọn $a = 1$ thì $T(n) \geq n^2 \log n$.\\
+		Vậy $T(n) = \Omega (n^2 \log n)$.
+	
+	\addcontentsline{toc}{section}{Bài tập 4}
+	
+	\clearpage
+
+	\section*{Bài tập 5}
+		Một số trường hợp sau không giải được bằng Master Theorem. Vì sao?
+		
+		\begin{center}
+			\textbf{\underline{Bài làm:}}
+		\end{center}
+		
+		1. $\displaystyle
+		T(n) = 2^n T\left( \frac{n}{2} \right) + n^n$
+		
+		Không thể dùng được định lý Master vì $a = 2^n$ không phải là một hằng số.\\
+		
+		2. $\displaystyle
+		T(n) = 0.5T\left( \frac{n}{2} \right) + n$
+		
+		Không thể dùng được định lý Master vì $a = 0.5 < 1$.\\
+		
+		3. $\displaystyle
+		T(n) = T\left( \frac{n}{2}\right) + n \left( 2 - \cos n \right)$
+		
+		Ta có: $a = 1, b = 2, f(n) = n \left( 2 - \cos n \right) = \Omega (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{2} 1 < 1$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		\frac{n}{2} \left( 2 - \cos{\frac{n}{2}} \right) \leq ln \left( 2 - \cos n \right)$.\\
+		Đặt $n = 2 \pi k$ (với $k$ là số lẻ và đủ lớn), ta được:\\
+		$\displaystyle
+		3 \pi k \leq l 2 \pi k$ hay $\displaystyle
+		l \geq \frac{3}{2}$ (không thỏa mãn điều kiện chính quy)\\
+		Do đó không thể dùng được định lý Master bởi nếu dùng định lý Master trường hợp 3 thì điều kiện chính quy không thỏa.\\
+		
+		4. $\displaystyle
+		T(n) = 64T\left( \frac{n}{8} \right) - n^2 \log n$
+		
+		Không thể dùng được định lý Master vì $f(n) = - n^2 \log n < 0$ không phải là một hàm dương.
+		
+	\addcontentsline{toc}{section}{Bài tập 5}
+	
+	\clearpage
+	
+	\section*{Bài tập 6}
+		Giải bằng định lý Master. Câu nào không áp dụng được định lý Master thì giải thích vì sao và tìm cách giải quyết khác (nếu được)
+		
+		\begin{center}
+			\textbf{\underline{Bài làm:}}
+		\end{center}
+		
+		1. $\displaystyle
+		T(n) = 3T\left( \frac{n}{2} \right) + n^2$
+		
+		Ta có: $a = 3, b = 2, f(n) = n^2 = \Omega (n^2)$ với $c = 2$.\\
+		Mà $\log_{b} a = \log_{2} 3 < 2$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		3 \left( \frac{n^2}{4} \right)  \leq kn^2$, chọn $\displaystyle
+		k = \frac{3}{4}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n^2)$.
+		\\
+		
+		2. $\displaystyle
+		T(n) = 7T\left( \frac{n}{3} \right) + n^2$
+		
+		Ta có: $a = 7, b = 3, f(n) = n^2 = \Omega (n^2)$ với $c = 2$.\\
+		Mà $\log_{b} a = \log_{3} 7 < 2$.\\
+		$\displaystyle
+		7 \left( \frac{n^2}{9} \right)  \leq cn^2$, chọn $\displaystyle
+		k = \frac{7}{9}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n^2)$.
+		\\
+		
+		3. $\displaystyle
+		T(n) = 3T\left( \frac{n}{3} \right) + \frac{n}{2}$
+		
+		Ta có: $a = 3, b = 3, f(n) = \displaystyle \frac{n}{2} = \Theta (n)$ với $c = 1, k = 0$.\\
+		Mà $\log_{b} a = \log_{3} 3 = 1$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $T(n) = \Theta \left( n^{\log_{b} a} \log^{k + 1} n \right) = \Theta (n\log n)$.
+		\\
+		
+			
+		4. $\displaystyle
+		T(n) = 16T\left( \frac{n}{4} \right) + n$
+		
+		Ta có: $a = 16, b = 4, f(n) = n = O(n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{4} 16 = 2 > 1$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^2)$.
+		\\
+		
+		
+		5. $\displaystyle
+		T(n) = 2T\left( \frac{n}{4} \right) + n^{0.51}$
+		
+		Ta có: $a = 2, b = 4, f(n) = n^{0.51} = \Omega (n^{0.51})$ với $c = 0.51$.\\
+		Mà $\log_{b} a = \log_{4} 2 < 0.51$.\\
+		$\displaystyle
+		2 \left( \frac{n^{0.51}}{4^{0.51}} \right)  \leq kn^{0.51}$, chọn $\displaystyle
+		k = \frac{1}{2}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n^{0.51})$.
+		\clearpage
+				
+		6. $\displaystyle
+		T(n) = 3T\left( \frac{n}{2} \right) + n$
+		
+		Ta có: $a = 3, b = 2, f(n) = n = O (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{2} 3 > 1$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{2} 3})$.
+		\\
+		
+		7. $\displaystyle
+		T(n) = 3T\left( \frac{n}{3} \right) + \sqrt{n}$	
+		
+		Ta có: $a = 3, b = 3, f(n) = \sqrt{n} = O \left( \sqrt{n} \right) $ với $c = \frac{1}{2}$.\\
+		Mà $\displaystyle
+		\log_{b} a = \log_{3} 3 > \frac{1}{2}$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{3} 3}) = \Theta (n)$.
+		\\
+		
+		8. $\displaystyle
+		T(n) = 4T\left( \frac{n}{2} \right) + cn$
+		
+		Ta có: $a = 4, b = 2, f(n) = cn = O (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{2} 4 > 1$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{2} 4}) = \Theta (n^2)$.
+		\\
+		
+		9. $\displaystyle
+		T(n) = 4T\left( \frac{n}{4} \right) + 5n$
+		
+		Ta có: $a = 4, b = 4, f(n) = 5n = \Theta (n)$ với $c = 1, k = 1$.\\
+		Mà $\log_{b} a = \log_{4} 4 = 1$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $T(n) = \Theta \left( n^{\log_{b} a} \log^{k + 1} n \right) = \Theta (n\log n)$.
+		\\
+		
+		10. $\displaystyle
+		T(n) = 5T\left( \frac{n}{4} \right) + 4n$
+		
+		Ta có: $a = 5, b = 4, f(n) = 4n = O (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{4} 5 > 1$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{4} 5})$.
+		\\
+		
+		11. $\displaystyle
+		T(n) = 4T\left( \frac{n}{5} \right) + 5n$
+		
+		Ta có: $a = 4, b = 5, f(n) = 5n = \Omega (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{5} 4 < 1$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		4 \left( \frac{5n}{5} \right) \leq 5kn$, chọn $\displaystyle
+		k = \frac{4}{5}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n)$.
+		\\
+		
+		12. $\displaystyle
+		T(n) = 25T\left( \frac{n}{5} \right) + n^2$
+		
+		Ta có: $a = 25, b = 5, f(n) = n^2 = \Theta (n^2)$ với $c = 2, k = 0$.\\
+		Mà $\log_{b} a = \log_{5} 25 = 2$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $T(n) = \Theta \left( n^{\log_{b} a} \log^{k + 1} n \right) = \Theta (n^2\log n)$.
+		\clearpage
+		
+		13. $\displaystyle
+		T(n) = 10T\left( \frac{n}{3} \right) + 17n^{1.2}$
+		
+		Ta có: $a = 10, b = 3, f(n) = 17n^{1.2} = O (n^{1.2})$ với $c = 1.2$.\\
+		Mà $\log_{b} a = \log_{3} 10 > 1.2$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{3} 10})$.
+		\\
+		
+		14. $\displaystyle
+		T(n) = 7T\left( \frac{n}{2} \right) + n^3$
+		
+		Ta có: $a = 7, b = 2, f(n) = n^3 = \Omega (n^3)$ với $c = 3$.\\
+		Mà $\log_{b} a = \log_{2} 7 < 3$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		7 \left( \frac{n^3}{8} \right) \leq kn^3$, chọn $\displaystyle
+		k = \frac{7}{8}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n^3)$.
+		\\
+		
+		15. $\displaystyle
+		T(n) = 4T\left( \frac{n}{2} \right) + \log n$
+		
+		Ta có: $a = 4, b = 2, f(n) = \log n = O (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{2} 4 > 1$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{2} 4}) = \Theta (n^2)$.
+		\\
+		
+		16. $\displaystyle
+		T(n) = 4T\left( \frac{n}{5} \right) + \log n$
+		
+		Ta có: $a = 4, b = 5, f(n) = \log n = \left( n^{\frac{1}{2}} \right)$ với $\displaystyle
+		c = \frac{1}{2}$.\\
+		Mà $\displaystyle
+		\log_{b} a = \log_{5} 4 > \frac{1}{2}$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{5} 4})$.
+		\\
+		
+		17. $\displaystyle
+		T(n) = \sqrt{2} T\left( \frac{n}{2} \right) + \log n$
+		
+		Ta có: $\displaystyle
+		a = \sqrt{2}, b = 2, f(n) = \log n = O \left( n^\frac{1}{4} \right)$ với $\displaystyle
+		c = \frac{1}{4}$.\\
+		Mà $\displaystyle
+		\log_{b} a = \log_{2} \sqrt{2} > \frac{1}{4}$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{2} \sqrt{2}}) = \Theta (\sqrt{n})$.
+		\\
+		
+		18. $\displaystyle
+		T(n) = 2T\left( \frac{n}{3} \right) + n \log n$
+		
+		Ta có: $a = 2, b = 3, f(n) = n \log n = \Omega (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{3} 2 < 1$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		\frac{2n}{3} \log \frac{n}{3} \leq kn \log n$, chọn $\displaystyle
+		k = \frac{2}{3}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n \log n)$.
+		\clearpage
+		
+		19. $\displaystyle
+		T(n) = 3T\left( \frac{n}{4} \right) + n \log n$
+		
+		Ta có: $a = 3, b = 4, f(n) = n \log n = \Omega (n)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{4} 3 < 1$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		\frac{3n}{4} \log \frac{n}{4} \leq kn \log n$, chọn $\displaystyle
+		k = \frac{3}{4}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n \log n)$.
+		\\
+	
+		20. $\displaystyle
+		T(n) = 6T\left( \frac{n}{3} \right) + n^2 \log n$
+		
+		Ta có: $a = 6, b = 3, f(n) = n^2 \log n = \Omega (n^2)$ với $c = 2$.\\
+		Mà $\log_{b} a = \log_{3} 6 < 2$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		\frac{6n^2}{9} \log \frac{n}{3} \leq kn^2 \log n$, chọn $\displaystyle
+		k = \frac{2}{3}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $T(n) = \Theta (f(n)) = \Theta (n^2 \log n)$.
+		\\
+		
+		21. $\displaystyle
+		T(n) = 3T\left( \frac{n}{5} \right) + \log^{2}{n}$
+		
+		Ta có: $\displaystyle
+		a = 3, b = 5, f(n) = \log^{2}{n} = O \left( n^\frac{3}{4} \right)$ với $\displaystyle
+		c = \frac{3}{4}$.\\
+		Mà $\displaystyle
+		\log_{b} a = \log_{5} 3 > \frac{3}{4}$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{5} 3})$.
+		\\
+		
+		22. $\displaystyle
+		T(n) = 2T\left( \frac{n}{2} \right) + \frac{n}{\log n}$
+		
+		Ta không thể áp dụng định lý Master trong bài này.\\
+		Tuy nhiên,  $\displaystyle
+		a = 2, b = 2, f(n) = \frac{n}{\log n} = \Theta \left( n \log^{-1} n \right)$ với $c = 1, k = -1$.\\
+		Mà $\displaystyle
+		\log_{b} a = \log_{2} 2 = 1$.\\
+		Ta có thể áp dụng định lý Master mở rộng cho trường hợp 2. Do đó, ta được $T(n) = \Theta \left( n^{\log_{b} a} \log{\log n} \right) = \Theta (n \log{\log n})$.
+	
+	\addcontentsline{toc}{section}{Bài tập 6}
+	
+	\clearpage
+
+	\section*{Bài tập 7}
+		Dạng nâng cao: Không bắt buộc, bài tập cộng điểm. Dùng phương pháp gì cũng được
+		
+		\begin{center}
+			\textbf{\underline{Bài làm:}}
+		\end{center}
+	
+		1. $\displaystyle
+		T(n) = 4T\left( \frac{n}{5} \right) + \log^{5}{n \sqrt{n}}$
+		
+		$\displaystyle
+		T(n) = 4T\left( \frac{n}{5} \right) + \log^{5}{n \sqrt{n}} = 4T\left( \frac{n}{5} \right) + \frac{3}{2} \log^{5} n$\\
+		Ta có: $\displaystyle
+		a = 4, b = 5, f(n) = \frac{3}{2} \log^{5} n = O \left( n^\frac{3}{4} \right)$ với $\displaystyle
+		c = \frac{3}{4}$.\\
+		Mà $\displaystyle
+		\log_{b} a = \log_{5} 4 > \frac{3}{4}$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $T(n) = \Theta \left( n^{\log_{b} a} \right) = \Theta (n^{\log_{5} 4})$.
+		\\
+					
+		2. $T(n) = 4T\left( \sqrt{n} \right) + \log^{5} n$
+		
+		Đăt $m = \log n$ ta được: $\displaystyle
+		T(2 ^ m) = 4T\left(2 ^ {\frac{m}{2}}\right) + m^5 $.\\
+		Chọn $S(m) = T(2 ^ m) = T(n)$.\\
+		$\displaystyle
+		\Rightarrow S(m) = 4S \left( \frac{m}{2} \right) + m^5$.\\
+		Ta có: $a = 4, b = 2, f(m) = m^5 = \Omega (m^5)$ với $c = 5$.\\
+		Mà $\log_{b} a = \log_{2} 4 < 5$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		\frac{4n^5}{32} \leq kn^5$, chọn $\displaystyle
+		k = \frac{1}{8}$.\\
+		Do đó, theo định lý Master trường hợp 3 thì $S(m) = \Theta (f(m)) = \Theta (m^5)$.\\
+		Đổi $S(m)$ về $T(n)$, ta được: $T(n) = \Theta (\log^{5} n)$.
+		\\
+		
+		3. $T(n) = 4T\left( \sqrt{n} \right) + \log^{2} n$
+		
+		Đăt $m = \log n$ ta được: $\displaystyle
+		T(2 ^ m) = 4T\left(2 ^ {\frac{m}{2}}\right) + m^2 $.\\
+		Chọn $S(m) = T(2 ^ m) = T(n)$.\\
+		$\displaystyle
+		\Rightarrow S(m) = 4S \left( \frac{m}{2} \right) + m^2$.\\
+		Ta có: $a = 4, b = 2, f(m) = m^2 = \Theta (m^2)$ với $c = 2, k = 0$.\\
+		Mà $\log_{b} a = \log_{2} 4 = 2$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $S(m) = \Theta \left( m^{\log_{b} a} \log^{k + 1} m \right) = \Theta (m^2\log m)$.
+		Đổi $S(m)$ về $T(n)$, ta được: $T(n) = \Theta (\log^{2} n \log {\log n})$.
+		\clearpage
+		
+		4. $T(n) = 4T\left( \sqrt{n} \right) + 5$
+		
+		Đăt $m = \log n$ ta được: $\displaystyle
+		T(2 ^ m) = 4T\left(2 ^ {\frac{m}{2}}\right) + 5$.\\
+		Chọn $S(m) = T(2 ^ m) = T(n)$.\\
+		$\displaystyle
+		\Rightarrow S(m) = 4S \left( \frac{m}{2} \right) + 5$.\\
+		Ta có: $a = 4, b = 2, f(m) = 5 = O (m)$ với $c = 1$.\\
+		Mà $\log_{b} a = \log_{2} 4 > 1$.\\
+		Do đó, theo định lý Master trường hợp 1 thì $S(m) = \Theta \left( m^{\log_{b} a} \right) = \Theta (n^{\log_{2} 4}) = \Theta (m^2)$.
+		Đổi $S(m)$ về $T(n)$, ta được: $T(n) = \Theta (\log^{2} n)$.
+		\\
+		
+		5. $\displaystyle
+		T(n) = T\left( \frac{n}{2} \right) + 2T\left( \frac{n}{5} \right) + T\left( \frac{n}{10} \right) + 4n$
+
+		Sử dụng cây đệ quy ta có:\\
+        \begin{adjustbox}{width=\textwidth}
+		  \begin{tikzpicture} [
+                level 1/.style={level distance=2.5cm,sibling distance=7cm},
+                level 2/.style={level distance=2cm, sibling distance=1.7cm}]
+
+                \node (z) {$\displaystyle T\left({n}\right)$}
+                    child {
+                    node (a1) {$\displaystyle T\left(\frac{n}{2}\right)$}
+                    child { node (b1) {$\displaystyle T\left(\frac{n}{4}\right)$} }
+                    child { node (b2) {$\displaystyle T\left(\frac{n}{10}\right)$} }
+                    child { node (b3) {$\displaystyle T\left(\frac{n}{10}\right)$} }
+                    child { node (b4) {$\displaystyle T\left(\frac{n}{20}\right)$} }
+                    }
+                    child {
+                    node (a2) {$\displaystyle T\left(\frac{n}{5}\right)$}
+                    child { node (b5) {$\displaystyle T\left(\frac{n}{10}\right)$} }
+                    child { node (b6) {$\displaystyle T\left(\frac{n}{25}\right)$} }
+                    child { node (b7) {$\displaystyle T\left(\frac{n}{25}\right)$} }
+                    child { node (b8) (g12) {$\displaystyle T\left(\frac{n}{50}\right)$} }
+                    }
+                    child {
+                    node (a3) {$\displaystyle T\left(\frac{n}{5}\right)$}
+                    child { node (b9) {$\displaystyle T\left(\frac{n}{10}\right)$} }
+                    child { node (b10) {$\displaystyle T\left(\frac{n}{25}\right)$} }
+                    child { node (b11) {$\displaystyle T\left(\frac{n}{25}\right)$} }
+                    child { node (b12) {$\displaystyle T\left(\frac{n}{50}\right)$} }
+                }
+                    child {
+                    node (a4) {$\displaystyle T\left(\frac{n}{10}\right)$}
+                    child { node (b13) {$\displaystyle T\left(\frac{n}{20}\right)$} }
+                    child { node (b14) {$\displaystyle T\left(\frac{n}{50}\right)$} }
+                    child { node (b15) {$\displaystyle T\left(\frac{n}{50}\right)$} }
+                    child { node (b16) {$\displaystyle T\left(\frac{n}{100}\right)$} }
+                };
+
+                \node (01) at ([shift={(0,-2.5cm)}]a1.south) {$\boldsymbol{\cdot}$};
+                \node (02) at ([shift={(0,-3cm)}]a1.south) {$\boldsymbol{\cdot}$};
+                \node (03) at ([shift={(0,-3.5cm)}]a1.south) {$\boldsymbol{\cdot}$};
+                \node (04) at ([shift={(0,-2.5cm)}]a2.south) {$\boldsymbol{\cdot}$};
+                \node (05) at ([shift={(0,-3cm)}]a2.south) {$\boldsymbol{\cdot}$};
+                \node (06) at ([shift={(0,-3.5cm)}]a2.south) {$\boldsymbol{\cdot}$};
+                \node (07) at ([shift={(0,-2.5cm)}]a3.south) {$\boldsymbol{\cdot}$};
+                \node (08) at ([shift={(0,-3cm)}]a3.south) {$\boldsymbol{\cdot}$};
+                \node (09) at ([shift={(0,-3.5cm)}]a3.south) {$\boldsymbol{\cdot}$};
+                \node (10) at ([shift={(0,-2.5cm)}]a4.south) {$\boldsymbol{\cdot}$};
+                \node (11) at ([shift={(0,-3cm)}]a4.south) {$\boldsymbol{\cdot}$};
+                \node (12) at ([shift={(0,-3.5cm)}]a4.south) {$\boldsymbol{\cdot}$};
+
+                \node[right=15 of z] (ln1) {$n$}[no edge from this parent]
+                    child {node (ln2) {$n$}[no edge from this parent]
+                        child {node (ln3) {$n$}[no edge from this parent]
+                }};
+
+                \node (13) at ([shift={(-1cm,-2.8cm)}]ln2.south) {$\boldsymbol{\cdot}$};
+                \node (14) at ([shift={(-1cm,-3.3cm)}]ln2.south) {$\boldsymbol{\cdot}$};
+                \node (15) at ([shift={(-1cm,-3.8cm)}]ln2.south) {$\boldsymbol{\cdot}$};
+
+                \draw[thick,->,-{Stealth[length=3mm, width=2mm]}]($(z.east)+(1em,0)$) -- (ln1);
+                \draw[thick,->,-{Stealth[length=3mm, width=2mm]}]($(a4.east)+(1em,0)$) -- (ln2);
+                \draw[thick,->,-{Stealth[length=3mm, width=2mm]}]($(b16.east)+(1em,0)$) -- (ln3);
+
+                \draw[thick]([shift={(-5cm,-4.5cm)}]ln2.south) -- ([shift={(0.2cm,-4.5cm)}]ln2.south);
+
+                \node at ([shift={(-1.9cm,-5cm)}]ln2.south) {Tổng cộng: O$(n\log{n})$};
+            \end{tikzpicture}
+        \end{adjustbox}
+		
+		6. $\displaystyle
+		T(n) = T\left( \frac{n}{2} \right) + 2^n$
+		
+		Ta có: $a = 1, b = 2, f(n) = 2^n = \Omega (n^2)$ với $c = 2$.\\
+		Mà $\log_{b} a = \log_{2} 1 < 2$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		2 ^ \frac{n}{2} \leq k2^n$, chọn $\displaystyle
+		k = \frac{1}{2}$ (với $n$ đủ lớn).\\
+		Do đó $T(n) = \Theta (f(n)) = \Theta (2^n)$.
+		\\
+		
+		7. $\displaystyle
+		T(n) = 16T\left( \frac{n}{4} \right) + n!$
+		
+		Ta có: $a = 16, b = 4, f(n) = n! = \Omega (n^3)$ với $c = 3$.\\
+		Mà $\log_{b} a = \log_{4} 16 < 3$.\\
+		Kiểm tra điều kiện chính quy:\\
+		$\displaystyle
+		16 \left( \frac{n}{2} \right)! \leq kn!$, chọn $\displaystyle
+		k = \frac{1}{2}$ (với $n$ đủ lớn).\\
+		Do đó $T(n) = \Theta (f(n)) = \Theta (n!)$.
+		\\
+		
+		8. $T(n) = T\left( \sqrt{n} \right) + \Theta \left( \log{\log n} \right)$
+		
+		Đăt $m = \log n$ ta được: $\displaystyle
+		T(2 ^ m) = T\left(2 ^ {\frac{m}{2}}\right) + \Theta \left( \log m \right)$.\\
+		Chọn $S(m) = T(2 ^ m) = T(n)$.\\
+		$\displaystyle
+		\Rightarrow S(m) = S \left( \frac{m}{2} \right) + \Theta \left( \log m \right)$.\\
+		Ta có: $a = 4, b = 2, f(m) = \Theta \left( \log m \right)$ với $c = 0, k = 1$.\\
+		Mà $\log_{b} a = \log_{2} 1 = 0$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $S(m) = \Theta \left( m^{\log_{b} a} \log^{k + 1} m \right) = \Theta (\log^{2} m)$.
+		Đổi $S(m)$ về $T(n)$, ta được: $T(n) = \Theta (\log^{2} \left( {\log n} \right))$.
+		\clearpage
+		
+		9. $\displaystyle
+		T(n) = T\left( \frac{n}{2} + \sqrt{n} \right) + \sqrt{6046}$
+		
+		Với $n$ đủ lớn thì $\displaystyle
+		T\left( \frac{n}{2} \right) \leq T\left( \frac{n}{2} + \sqrt{n} \right) \leq T\left( \frac{3n}{4} \right)$.\\
+		Xét $\displaystyle
+		T_1 = \left( \frac{n}{2} \right) + \sqrt{6046}$.\\
+		Ta có: $a = 1, b = 2, f(n) = \sqrt{6046} = \Theta (1)$ với $c = 0, k = 0$.\\
+		Mà $\log_{b} a = \log_{2} 1 = 0$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $T_1(n) = \Theta \left( n^{\log_{b} a} \log^{k + 1} n \right) = \Theta (\log n)$.
+		Xét $\displaystyle
+		T_2 = \left( \frac{3n}{4} \right) + \sqrt{6046}$.\\
+		Ta có: $\displaystyle
+		a = 1, b = \frac{4}{3}, f(n) = \sqrt{6046} = \Theta (1)$ với $c = 0, k = 0$.\\
+		Mà $\displaystyle
+		\log_{b} a = \log_{\frac{4}{3}} 1 = 0$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $T_1(n) = \Theta \left( n^{\log_{b} a} \log^{k + 1} n \right) = \Theta (\log n)$.
+		Vậy ta suy ra $T(n) = \Theta (\log n)$.
+		\\
+		
+		10. $T(n) = T(n - 2) + \log n$
+		
+		Giả sử $T(0) = 0$.\\
+		Ta có:
+		\begin{align*}
+		T(n) &= T(n - 2) + \log n\\
+		&= [T(n - 4) + \log (n - 2)] + \log n = T(n - 4) + \log n + \log (n - 2)\\
+		&= [T(n - 6) + \log (n - 4)] + \log n + \log (n - 2) = T(n - 6) + \log n + \log (n - 2) + \log (n - 4)\\
+		&= ...\\
+		&= T(n - 2i) + \sum_{k = 1}^{i} {\log (n - 2k + 2)}
+		\end{align*}
+		Quá trình dừng lại khi $n - 2i = 0$ hay $\displaystyle
+		i = \frac{n}{2}$.\\
+		Suy ra $\displaystyle
+		T(n) = T(0) + \sum_{k = 1}^{\frac{n}{2}} \log (n - 2k + 2)$.\\
+		Mà $\displaystyle
+		\sum_{k = 1}^{\frac{n}{2}} \log (n - 2k + 2) \geq \sum_{k = 1}^{\frac{n}{2}} \log 2k \geq \sum_{k = 1}^{\frac{n}{2}} \log k \geq \frac{n}{4} \log {\frac{n}{4}}$\\
+		Suy ra $T(n) = \Omega (n\log n)$ \hspace{200pt} (1).\\
+		Ta lại có: $T(n) \leq S(n)$, với $S(n) = S(n - 1) + \log n$ \hspace{60pt} (2).
+		\begin{align*}
+		T(n) &= T(n - 1) + \log n\\
+		&= [T(n - 2) + \log (n - 1)] + \log n = T(n - 2) + \log n + \log (n - 1)\\
+		&= [T(n - 3) + \log (n - 2)] + \log n + \log (n - 1) = T(n - 3) + \log n + \log (n - 1) + \log (n - 2)\\
+		&= ...\\
+		&= T(n - i) + \sum_{k = 1}^{i} {\log (n - k + 1)}
+		\end{align*}
+		Quá trình dừng lại khi $n - i = 0$ hay $i = n$.\\
+		Suy ra $\displaystyle
+		T(n) = T(0) + \sum_{k = 1}^{n} \log (n - k + 1)$\\
+		Mà $\displaystyle
+		\sum_{k = 1}^{n} \log (n - k + 1) \leq n\log n$\\
+		Suy ra $S(n) = O (n\log n)$ \hspace{200pt} (3).\\
+		Từ (1), (2) và (3), ta kết luận $T(n) = \Theta (n\log n)$.
+		\\
+		
+		11. $\displaystyle
+		T(n) = T\left( \frac{n}{5} \right) + T\left( \frac{4n}{5} \right) + \Theta (n)$
+		
+		Sử dụng cây đệ quy ta có:\\
+		\begin{adjustbox}{width=\textwidth}
+		  \begin{tikzpicture} [
+                level 1/.style={level distance=2.3cm,sibling distance=7cm},
+                level 2/.style={level distance=2cm, sibling distance=3cm}]
+
+                \node (z) {$\displaystyle T\left({n}\right)$}
+                    child { 
+                    node (a1) {$\displaystyle T\left(\frac{n}{5}\right)$}
+                    child { node (b1) {$\displaystyle T\left(\frac{n}{25}\right)$} }
+                    child { node (b2) {$\displaystyle T\left(\frac{4n}{25}\right)$} }
+                    }
+                    child {
+                    node (a2) {$\displaystyle T\left(\frac{4n}{5}\right)$}
+                    child { node (b3) {$\displaystyle T\left(\frac{4n}{25}\right)$} }
+                    child { node (b4) {$\displaystyle T\left(\frac{16n}{25}\right)$} }
+                    };
+                
+                \node (01) at ([shift={(0,-2.5cm)}]a1.south) {$\boldsymbol{\cdot}$};
+                \node (02) at ([shift={(0,-3cm)}]a1.south) {$\boldsymbol{\cdot}$};
+                \node (03) at ([shift={(0,-3.5cm)}]a1.south) {$\boldsymbol{\cdot}$};
+                \node (04) at ([shift={(0,-2.5cm)}]a2.south) {$\boldsymbol{\cdot}$};
+                \node (05) at ([shift={(0,-3cm)}]a2.south) {$\boldsymbol{\cdot}$};
+                \node (06) at ([shift={(0,-3.5cm)}]a2.south) {$\boldsymbol{\cdot}$};
+
+                \node[right=8 of z] (ln1) {$\Theta(n)$}[no edge from this parent]
+                    child {node (ln2) {$\Theta(n)$}[no edge from this parent]
+                        child {node (ln3) {$\Theta(n)$}[no edge from this parent]
+                }};
+
+                \node (13) at ([shift={(-1cm,-2.8cm)}]ln2.south) {$\boldsymbol{\cdot}$};
+                \node (14) at ([shift={(-1cm,-3.3cm)}]ln2.south) {$\boldsymbol{\cdot}$};
+                \node (15) at ([shift={(-1cm,-3.8cm)}]ln2.south) {$\boldsymbol{\cdot}$};
+
+                \draw[thick,-{Stealth[length=3mm, width=2mm]}]($(z.east)+(1em,0)$) -- (ln1);
+                \draw[thick,-{Stealth[length=3mm, width=2mm]}]($(a2.east)+(1em,0)$) -- (ln2);
+                \draw[thick,-{Stealth[length=3mm, width=2mm]}]($(b4.east)+(1em,0)$) -- (ln3);
+
+                \draw[thick]([shift={(-5cm,-4.4cm)}]ln2.south) -- ([shift={(0.5cm,-4.4cm)}]ln2.south);
+
+                \node at ([shift={(-1.6cm,-4.8cm)}]ln2.south) {Tổng cộng: O$(n\log{n})$};
+
+                \coordinate (cd1) at ($(b1)+(-1.5,-0.5)$);
+                \draw[thick,{Stealth[length=3mm, width=2mm]}-{Stealth[length=3mm, width=2mm]}] (cd1) -- (cd1|-z.east) node [left, midway] {$\log_{\frac{5}{4}}n$};
+            
+            \end{tikzpicture}
+        \end{adjustbox}
+		
+		12. $T(n) = \sqrt{n} T\left( \sqrt{n} \right) + 100n$
+		
+		Ta có: $\displaystyle
+		S(n) = \frac{T(n)}{n} = \frac{\sqrt{n} T\left( \sqrt{n} \right) + 100n}{n} = \frac{T\left( \sqrt{n} \right)}{\sqrt{n}} + 100 = S \left( \sqrt{n} \right) + 100$\\
+		Đăt $m = \log n$ ta được: $\displaystyle
+		S(2 ^ m) = S\left(2 ^ {\frac{m}{2}}\right) + 100$.\\
+		Chọn $R(m) = S(2 ^ m) = S(n)$.\\
+		$\displaystyle
+		\Rightarrow R(m) = R \left( \frac{m}{2} \right) + 100$.\\
+		Ta có: $a = 1, b = 2, f(n) = 100 = \Theta (1)$ với $c = 0, k = 0$.\\
+		Mà $\log_{b} a = \log_{2} 1 = 0$.\\
+		Do đó, theo định lý Master trường hợp 2 thì $R(m) = \Theta \left( m^{\log_{b} a} \log^{k + 1} m \right) = \Theta (\log m)$.
+		Đổi $R(m)$ về $S(n)$, ta được: $S(n) = \Theta (\log{\log n})$.\\
+		Vậy $T(n) = \Theta (n \log{\log n})$.
+		
+	\addcontentsline{toc}{section}{Bài tập 7}
+		
+\end{document}

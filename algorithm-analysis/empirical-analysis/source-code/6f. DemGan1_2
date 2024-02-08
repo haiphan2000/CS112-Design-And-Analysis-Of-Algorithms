@@ -1,0 +1,60 @@
+#include <iostream>
+using namespace std;
+
+void ThuatToan1(int, int &);
+void ThuatToan2(int, int &);
+
+int main()
+{
+    for (int i = 1; i <= 20; i++)
+    {
+        cout << i << "\t";
+        int gan;
+        ThuatToan1(i, gan);
+        cout << gan << "\t";
+        ThuatToan2(i, gan);
+        cout << gan << endl;
+    }
+    
+    return 0;
+}
+
+void ThuatToan1(int n, int &s)
+{
+    int i = 1;
+    int m = n - n*(n % 2);
+    s = 3;
+    while (i <= m)
+    {
+        int j = 1;
+	    int k = i*i*(i % 2);
+	    s = s + 3;
+	    while (j <= k)
+	    {
+	        j = j + 1;
+		    s = s + 2;
+	    }
+	    i = i + 1;
+	    s = s + 2;
+    }
+}
+
+void ThuatToan2(int n, int &s)
+{
+    int i = 1;
+    int m = n*(n % 2);
+    s = 3;
+    while (i <= m)
+    {
+        int j = 1;
+	    int k = i*i - i*i*(i % 2);
+	    s = s + 3;
+	    while (j <= k)
+	    {
+	        j = j + 1;
+		    s = s + 2;
+	    }
+	    i = i + 1;
+	    s = s + 2;
+    }
+}

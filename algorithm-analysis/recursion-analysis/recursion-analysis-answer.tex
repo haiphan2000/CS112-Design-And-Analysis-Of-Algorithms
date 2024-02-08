@@ -1,0 +1,643 @@
+\documentclass[12pt, a4paper, fleqn]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{scrextend}
+\changefontsizes{13pt}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0em}
+\setlength{\mathindent}{0pt}
+
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total = {160mm, 247mm},
+	left = 25mm,
+	top = 25mm,
+}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\setlength\cftaftertoctitleskip{30pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{CS112.K11}
+\fancyhead[RE,LO]{\textit{HW\#03.a: Giải phương trình đệ quy bằng nhiều phương pháp}}
+\fancyfoot[CE,RO]{\thepage}
+
+\usepackage{listings}
+\usepackage[nopar]{lipsum}
+
+\lstdefinestyle{mystyle}{
+	basicstyle = \ttfamily\footnotesize,
+	breakatwhitespace = false,
+	breaklines = true,
+	captionpos = b,
+	keepspaces = true,
+	showspaces = false,
+	showstringspaces = false,
+	showtabs = false,
+	tabsize = 4
+}
+\lstset{style = mystyle}
+
+\usepackage{tikz}
+
+\begin{document}	
+	\begin{titlepage}
+		   %Vẽ đường viền
+		   \begin{tikzpicture}[overlay, remember picture]
+				%Vẽ đường viền màu xanh
+				\draw
+					[blue!70!black, line width = 6pt]
+					([xshift = -1.5cm, yshift = -2cm] current page.north east) coordinate (A) --
+					([xshift = 1.5cm, yshift = -2cm] current page.north west) coordinate(B) --
+					([xshift = 1.5cm, yshift = 2cm] current page.south west) coordinate (C) --
+					([xshift = -1.5cm, yshift = 2cm] current page.south east) coordinate(D) -- cycle;
+			
+				%Vẽ đường viền màu đen
+				\draw
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] B)--
+					([yshift = -0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = -0.2cm] B)--
+					([yshift = 0.2cm, xshift = -0.2cm] B) --
+					([yshift = 0.2cm, xshift = 0.2cm] B) --
+					([yshift = -0.2cm, xshift = 0.2cm] C) --
+					([yshift = -0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = -0.2cm] C) --
+					([yshift = 0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = 0.2cm] D) --
+					([yshift = -0.2cm, xshift = -0.2cm] D) --
+					([yshift = 0.2cm, xshift = -0.2cm] A) --
+					([yshift = 0.2cm, xshift = 0.2cm] A) --
+					([yshift = -0.2cm, xshift = 0.2cm] A);
+			\end{tikzpicture}
+		
+		%Thiết kế nội dung cho phần bìa
+		\begin{center}
+			\textbf{TRƯỜNG ĐẠI HỌC CÔNG NGHỆ THÔNG TIN}
+			
+			\vspace*{0.2cm}
+
+			\textbf{KHOA KHOA HỌC MÁY TÍNH}
+			
+			\vspace*{0.2cm}
+			
+			\textbf{----------oOo----------}
+			
+			\vspace{2cm}
+			
+			\includegraphics[width=0.25\textwidth]{UIT_Logo}
+			
+			\vspace{2cm}
+			
+			\Large
+			\textbf{HW\#03.a: GIẢI PHƯƠNG TRÌNH ĐỆ QUY BẰNG NHIỀU PHƯƠNG PHÁP}
+		
+		\end{center}
+			
+			\vspace{3cm}
+			\normalsize	
+			
+			\hspace{70pt} \textbf{\textit{Giảng viên hướng dẫn:}} ThS. Huỳnh Thị Thanh Thương\\
+			
+			\vspace*{1cm}
+			
+			\hspace{70pt} \textbf{\textit{Nhóm sinh viên:}}
+			
+			\vspace*{0.2cm}
+			
+			\hspace{70pt} 1. \hspace{10pt} Phạm Bá Đạt \hspace{60pt} 17520337
+			
+			\vspace*{0.2cm}
+			\hspace{70pt} 2. \hspace{10pt} Phan Thanh Hải  \hspace{45pt} 18520705
+			
+			\vspace{4cm}
+		
+		\begin{center}
+			\textbf{TP. HỒ CHÍ MINH, 2019}
+		\end{center}
+			
+	\end{titlepage}
+
+	%Làm trang mục lục	
+	\begin{center}
+		\tableofcontents
+	\end{center}
+	\clearpage
+	
+	\setlength{\abovedisplayskip}{5pt}
+	\setlength{\belowdisplayskip}{5pt}
+	
+\section*{Bài tập 1}
+Thành lập phương trình đệ quy
+	
+a.
+\begin{lstlisting}[language = C++]
+int BinarySearch(int a[], int x, int l, int r)
+{
+	int mid;
+	if (l > r)	return 0;
+	mid = (l + r) / 2;
+	if (x == a[mid])
+		return 1;
+	if (x > a[mid])
+		return BinarySearch(a, x, mid + 1, r);
+	return BinarySearch(a, x, l, mid - 1);
+}
+\end{lstlisting}
+\begin{align*}
+&T(0)=\alpha\\
+&T(1)=\beta\\
+&T(n)=T\left(\frac{n}{2}\right) + \gamma
+\end{align*}
+
+b.
+\begin{lstlisting}[language = C++]
+waste(n)
+{
+	if (n == 0)	return 0;
+	for (i = 1 to n)
+		for (j = 1 to i)
+			print i, j, n;
+	for (i = 1 to 3)
+			waste(n / 2);
+}
+\end{lstlisting}
+\begin{align*}
+&T(0)=\gamma\\
+&T(n)=3T\left(\frac{n}{2}\right) + \alpha n^2 + \beta
+\end{align*}
+
+c.
+\begin{lstlisting}[language = C++]
+Draw(n)
+{
+	if (n < 1)	return 0;
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++)
+			print("*");
+	Draw(n - 3);
+}
+\end{lstlisting}
+\begin{align*}
+&T(0)=\gamma\\
+&T(n)=T(n-3) + \alpha n^2 + \beta
+\end{align*}
+
+d.
+\begin{lstlisting}[language = C++]
+int f(int n)
+{
+	if (n == 1)	return 2;
+	return 3^f(n / 2) + 2*log(f(n / 2)) - f(n / 2) + 1;
+}
+\end{lstlisting}
+\begin{align*}
+&T(1)=\gamma\\
+&T(n)=3T\left(\frac{n}{2}\right) + \alpha
+\end{align*}
+
+e.
+\begin{lstlisting}[language = C++]
+reSum(a, left, right)
+{
+	if (left == right)	return a[left];
+	mid = (left + right) / 2;
+	return reSum(a, left, mid) + reSum(a, mid + 1, right);
+}
+\end{lstlisting}
+\begin{align*}
+&T(1)=\gamma\\
+&T(n)=2T\left(\frac{n}{2}\right) + \alpha
+\end{align*}
+
+f.
+
+Gọi T(n) là số phép cộng cần thực hiện khi gọi Zeta(k). Hãy thiết lập công thức truy hồi cho T(n).
+
+Cho hàm:
+\begin{lstlisting}[language = C++]
+Zeta(n)
+{
+	if (n == 0) Zeta = 6;
+	else
+	{
+		k = 0;
+		Ret = 0;
+		while (k <= n - 1)
+		{
+			Ret = Ret + Zeta(k);
+			k = k + 1;
+		}
+		Zeta = Ret;
+	}
+}
+\end{lstlisting}
+
+\addcontentsline{toc}{section}{Bài tập 1}
+	
+\clearpage
+
+\section*{Bài tập 2}
+Giải các phương trình đệ quy sau bằng phương pháp truy hồi
+
+$T(n) = T(n - 1) + n \qquad\qquad\qquad\qquad\qquad T(1) = 1$\\
+Ta có:
+\begin{align*}
+T(n) &= T(n - 1) + n\\
+&= \left[T(n - 2) + n - 1\right] + n = T(n - 2) + 2n - 1\\
+&= \left[T(n - 3) + n - 2\right] + 2n - 1 = T(n - 3) + 3n - 3\\
+&= \left[T(n - 4) + n - 3\right] + 3n - 3 = T(n - 4) + 3n - 6\\
+&= ...\\
+&= T(n - i) + in - \frac{i(i - 1)}{2}
+\end{align*}
+Quá trình dừng lại khi $n - i = 1$ hay $i = n - 1$
+\begin{align*}
+\Rightarrow T(n) = T(1) + (n - 1)n - \frac{(n - 1)(n - 2)}{2} = \frac{n ^ 2 - n}{2} = O(n ^ 2)\\
+\end{align*}
+
+$T(n) = T(n - 1) + 5 \qquad\qquad\qquad\qquad\qquad T(1) = 0$\\
+Ta có:
+\begin{align*}
+T(n) &= T(n - 1) + 5\\
+&= \left[T(n - 2) + 5\right] + 5 = T(n - 2) + 2.5\\
+&= \left[T(n - 3) + 5\right] + 2.5 = T(n - 3) + 3.5\\
+&= ...\\
+&= T(n - i) + 5i
+\end{align*}
+Quá trình dừng lại khi $n - i = 1$ hay $i = n - 1$
+\begin{align*}
+\Rightarrow T(n) = T(1) + 5(n - 1) = 5n - 5 = O(n)\\
+\end{align*}
+
+$T(n) = 3T(n - 1) + 1 \qquad\qquad\qquad\qquad\qquad T(1) = 4$\\
+Ta có:
+\begin{align*}
+T(n) &= 3T(n - 1) + 1\\
+&= 3\left[3T(n - 2) + 1\right] + 1 = 3^2T(n - 2) + 3 + 1\\
+&= 3^2\left[3T(n - 3) + 1\right] + 3 + 1 = 3^3(n - 3) + 3^2 + 3 + 1\\
+&= ...\\
+&= 3^iT(n - i) + \sum_{k=0}^{i-1}3^k\\
+&= 3^iT(n - i) + \frac{1}{2}\left(3^i-1\right)
+\end{align*}
+Quá trình dừng lại khi $n - i = 1$ hay $i = n - 1$
+\begin{align*}
+\Rightarrow T(n) &=3^{n-1}T(1) + \frac{1}{2}\left(3^{n-1}-1\right)\\
+&=4.3^{n-1}+ \frac{1}{2}\left(3^{n-1}-1\right)\\
+&=O(3^n)
+\end{align*}
+
+\begin{align*}
+T(n) = 2T\left(\frac{n}{2}\right) + 1 \qquad\qquad\qquad\qquad\qquad T(1) = 1
+\end{align*}
+Ta có:
+\begin{align*}
+T(n) &= 2\left[2T\left(\frac{n}{2^2}\right)+1\right]+1=2^2T\left(\frac{n}{2^2}\right)+2+1\\
+&=2^2\left[2T\left(\frac{n}{2^3}\right)+1\right]+2+1=2^3T\left(\frac{n}{2^3}\right)+2^2+2+1\\
+&=...\\
+&=2^iT\left(\frac{n}{2^i}\right)+{\sum_{k=0}^{i-1}2^k}\\
+&=2^iT\left(\frac{n}{2^i}\right)+2^i-1
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{n}{2 ^ i} = 1$ hay $i = \log_{2}{n}$\\
+\begin{align*}
+\Rightarrow T(n) &= 2^{\log_{2}{n}}T(1)+2^{\log_{2}{n}}-1\\
+&= n+n-1\\
+&= O(n)
+\end{align*}
+
+\begin{align*}
+T(n) = 2T\left(\frac{n}{2}\right) + n \qquad\qquad\qquad\qquad\qquad T(1) = 1
+\end{align*}
+Ta có:
+\begin{align*}
+T(n) &= 2\left[2T\left(\frac{n}{2^2}\right)+\frac{n}{2}\right]+n=2^2T\left(\frac{n}{2^2}\right)+2n\\
+&=2^2\left[2T\left(\frac{n}{2^3}\right)+\frac{n}{2^2}\right]+2n=2^3T\left(\frac{n}{2^3}\right)+3n\\
+&=...\\
+&=2^iT\left(\frac{n}{2^i}\right)+in
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{n}{2 ^ i} = 1$ hay $i = \log_{2}{n}$\\
+\begin{align*}
+\Rightarrow T(n) &= 2^{\log_{2}{n}}T\left(\frac{n}{2^i}\right)+n\log_{2}{n}\\
+&= O\left(n\log_{2}{n}\right)
+\end{align*}
+
+\begin{align*}
+T(n) = 2T\left(\frac{n}{2}\right) + n^2 \qquad\qquad\qquad\qquad\qquad T(1) = 1
+\end{align*}
+Ta có:
+\begin{align*}
+T(n) &= 2\left[2T\left(\frac{n}{2^2}\right)+\frac{n^2}{2^2}\right]+n^2=2^2T\left(\frac{n}{2^2}\right)+\frac{n^2}{2^2}+n^2\\
+&=2^2\left[2T\left(\frac{n}{2^3}\right)+\frac{n^2}{2^4}\right]+\frac{n^2}{2^2}+n^2=2^3T\left(\frac{n}{2^3}\right)+\frac{2^2n^2}{2^4}+\frac{n^2}{2^2}+n^2\\
+&=...\\
+&=2^iT\left(\frac{n}{2^i}\right)+n^2\sum_{k=0}^{i-1}\left(\frac{1}{2}\right)^k\\
+&=2^iT\left(\frac{n}{2^i}\right)+2n^2\left[1-\left(\frac{1}{2}\right)^i\right]
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{n}{2 ^ i} = 1$ hay $i = \log_{2}{n}$\\
+\begin{align*}
+\Rightarrow T(n) &= 2^{\log_{2}{n}}T(1)+2n^2\left[1-\left(\frac{1}{2}\right)^{\log_{2}{n}}\right]\\
+&= n+2n^2\left[1-\left(\frac{1}{2}\right)^{\log_{2}{n}}\right]\\
+&= O(n^2)
+\end{align*}
+
+\addcontentsline{toc}{section}{Bài tập 2}
+	
+\clearpage
+
+\section*{Bài tập 3}
+Giải các phương trình đệ quy sau bằng phương pháp truy hồi
+$T(1) = 1$
+
+\begin{align*}
+T(n) = 3T\left(\frac{n}{2}\right) + n ^ 2
+\end{align*}
+Ta có:
+\begin{align*}
+T(n) &= 3\left[3T\left(\frac{n}{2^2}\right)+\frac{n^2}{2^2}\right]+n^2=3^2T\left(\frac{n}{2^2}\right)+\frac{3n^2}{2^2}+n^2\\
+	 &=3^2\left[3T\left(\frac{n}{2^3}\right)+\frac{n^2}{2^4}\right]+\frac{3n^2}{2^2}+n^2=3^3T\left(\frac{n}{2^3}\right)+\frac{3^2n^2}{2^4}+\frac{3n^2}{2^2}+n^2\\
+	 &=...\\
+	 &=3^iT\left(\frac{n}{2^i}\right)+n^2\sum_{k=0}^{i-1}\left({\frac{3}{4}}\right)^k\\
+	 &=3^iT\left(\frac{n}{2^i}\right)+4n^2\left[1-\left(\frac{3}{4}\right)^i\right]
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{n}{2 ^ i} = 1$ hay $i = \log_{2}{n}$
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+\Rightarrow T(n) &= 3^{\log_{2}{n}}T(1)+4n^2\left[1-\left(\frac{3}{4}\right)^{\log_{2}{n}}\right]\\
+				 &= n^{\log_{2}{3}}+4n^2\left[1-\left(\frac{3}{4}\right)^{\log_{2}{n}}\right]\\
+				 &=O(n^2)
+\end{align*}
+
+\begin{align*}
+T(n) = 8T\left(\frac{n}{2}\right) + n ^ 3
+\end{align*}
+Ta có:
+\begin{align*}
+T(n) &= 8\left[8T\left(\frac{n}{2^2}\right)+\frac{n^3}{2^3}\right]+n^3=8^2T\left(\frac{n}{2^3}\right)+\frac{8n^3}{2^3}+n^3\\
+	 &=8^2\left[8T\left(\frac{n}{2^3}\right)+\frac{n^3}{2^6}\right]+\frac{8n^3}{2^3}+n^3=8^3T\left(\frac{n}{2^3}\right)+\frac{8^2n^3}{2^6}+\frac{8n^3}{2^3}+n^3\\
+	 &=...\\
+	 &=8^iT\left(\frac{n}{2^i}\right)+n^3{\sum_{k=0}^{i-1}1}\\
+	 &=8^iT\left(\frac{n}{2^i}\right)+n^3i
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{n}{2 ^ i} = 1$ hay $i = \log_{2}{n}$
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+\Rightarrow T(n) &= 8^{\log_{2}{n}}T(1)+n^3\log_{2}{n}\\
+&= n^3+4n^3\log_{2}{n}\\
+&= O\left(n^3\log_{2}{n}\right)
+\end{align*}
+
+\begin{align*}
+T(n) = 4T\left(\frac{n}{3}\right) + n
+\end{align*}
+Ta có:
+\begin{align*}
+T(n) &= 4\left[4T\left(\frac{n}{3^2}\right)+\frac{n}{3}\right]+n=4^2T\left(\frac{n}{3^2}\right)+\frac{4n}{3}+n\\
+&=4^2\left[4T\left(\frac{n}{3^3}\right)+\frac{n}{3^2}\right]+\frac{4n}{3}+n=4^3T\left(\frac{n}{3^3}\right)+\frac{4^2n}{3^2}+\frac{4n}{3}+n\\
+&=...\\
+&=4^iT\left(\frac{n}{3^i}\right)+n\sum_{k=0}^{i-1}\left({\frac{4}{3}}\right)^k\\
+&=4^iT\left(\frac{n}{2^i}\right)-3n\left[1-\left(\frac{4}{3}\right)^i\right]
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{n}{3 ^ i} = 1$ hay $i = \log_{3}{n}$
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+\Rightarrow T(n) &= 4^{\log_{3}{n}}T(1)-3n\left[1-\left(\frac{4}{3}\right)^{\log_{3}{n}}\right]\\
+&= n^{\log_{3}{4}}-3n\left[1-\left(\frac{4}{3}\right)^{\log_{3}{n}}\right]\\
+&=O\left(n^{\log_{3}{4}}\right)
+\end{align*}
+
+\begin{align*}
+T(n) = 9T\left(\frac{n}{3}\right) + n ^ 2
+\end{align*}
+Ta có:
+\begin{align*}
+T(n) &= 9\left[9T\left(\frac{n}{3^2}\right)+\frac{n^2}{3^2}\right]+n^2=9^2T\left(\frac{n}{2^2}\right)+\frac{9n^2}{2^2}+n^2\\
+&=9^2\left[9T\left(\frac{n}{3^3}\right)+\frac{n^2}{3^4}\right]+\frac{9n^2}{2^2}+n^2=9^3T\left(\frac{n}{3^3}\right)+\frac{9^2n^2}{3^4}+\frac{9n^2}{3^2}+n^2\\
+&=...\\
+&=9^iT\left(\frac{n}{3^i}\right)+n^2{\sum_{k=0}^{i-1}1}\\
+&=9^iT\left(\frac{n}{3^i}\right)+n^2i
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{n}{3 ^ i} = 1$ hay $i = \log_{3}{n}$
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+\Rightarrow T(n) &= 9^{\log_{3}{n}}T(1)+n^2\log_{3}{n}\\
+&= n^2+n^2\log_{3}{n}\\
+&= O\left(n^2\log_{3}{n}\right)
+\end{align*}
+\\
+$T(2) = 0$ \qquad\qquad\qquad $T(n) = 2T\left(\sqrt{n}\right) + 1$\\
+Đăt $n = 2 ^ m$ ta được:
+$\displaystyle T(2 ^ m) = 2T\left(2 ^ {\displaystyle \frac{m}{2}}\right) + 1$\\
+Chọn $S(m) = T(2 ^ m) = T(n), S(1) = 0$
+\begin{align*}
+\Rightarrow S(m) &= 2S\left(\frac{m}{2}\right) + 1\\
+                 &= 2\left[2S\left(\frac{m}{2 ^ 2}\right) + 1\right] + 1 = 2 ^ 2S\left(\frac{m}{2 ^ 2}\right) + 2 + 1\\
+				 &= 2 ^ 2\left[2S\left(\frac{m}{2 ^ 3}\right) + 1\right] + 2 + 1 = 2 ^ 3S\left(\frac{m}{2 ^ 3}\right) + 2 ^ 2 + 2 + 1\\
+				 &= ...\\
+				 &= 2 ^ iS\left(\frac{m}{2 ^ i}\right) + \sum_{k = 0}^ {i - 1}2 ^ k\\
+				 &= 2 ^ iS\left(\frac{m}{2 ^ i}\right) + \frac{2 ^ i - 1}{2 - 1}\\
+				 &= 2 ^ iS\left(\frac{m}{2 ^ i}\right) + 2 ^ i - 1
+\end{align*}
+Quá trình dừng lại khi $\displaystyle \frac{m}{2 ^ i}-i = 1$ hay $i = \log_{2}{m}$\\
+$\Rightarrow S(m) = 2 ^ {\log_{2}{m}}S(1) + 2 ^ {\log_{2}{m}}-1 = m - 1 = O(m)$\\
+Do đó $T(n) = O(\log{n})$
+
+\addcontentsline{toc}{section}{Bài tập 3}
+	
+\clearpage
+
+\section*{Bài tập 4}
+Giải phương trình đệ quy sau dùng phương trình đặc trưng
+$T(n) = 4T(n - 1) - 3T(n - 2)$\\
+$T(0) = 1$\\
+$T(1) = 2$
+	
+Ta có:
+$T(n) - 4T(n - 1) + 3T(n - 2) = 0$\\
+Đặt $T(n) = x ^ n$ ta được: \\
+$x ^ n - 4x ^ {n - 1}+3x ^ {n - 2} = 0\\
+\Leftrightarrow x ^ {n - 2}\left(x ^ 2 - 4x + 3\right) = 0\\
+\Leftrightarrow x ^ 2 - 4x + 3 = 0\\
+\Leftrightarrow x = 1$(nghiệm đơn), $x = 3$(nghiệm đơn)\\
+Do đó: $T(n) = \alpha + \beta3 ^ n\\$
+Theo đề bài thì:\\
+$
+	\begin{cases}
+	\alpha + \beta = 1\\
+	\alpha + 3\beta = 2
+	\end{cases}
+$
+$\Leftrightarrow 
+	\begin{cases}
+	\alpha = \displaystyle \frac{1}{2}\\
+	\beta = \displaystyle \frac{1}{2}
+    \end{cases}
+$\\
+Do đó $\displaystyle T(n) = \frac{1}{2} + \frac{1}{2}3^ n = O(3 ^ n)$\\
+	
+$T(n) = 4T(n - 1) - 5T(n - 2) + 2T(n - 3)$
+$T(0) = 0$\\
+$T(1) = 1$\\
+$T(2) = 2$
+
+Ta có:
+$T(n) - 4T(n - 1) + 5T(n - 2) - 2T(n - 3) = 0$\\
+Đặt $T(n) = x ^ n$ ta được: \\
+$x ^ n - 4x ^ {n - 1} + 5x ^ {n - 2} - 2x ^ {n - 3} = 0\\
+\Leftrightarrow x ^ {n - 3}\left(x ^ 3 - 4x ^ 2 + 5x + - 2\right) = 0\\
+\Leftrightarrow x ^ 3 - 4x ^ 2 + 5x + - 2 = 0\\
+\Leftrightarrow x = 1$(nghiệm kép), $x = 2$(nghiệm đơn)\\
+Do đó: $T(n) = \alpha2 ^ n + \beta3 ^ n\gamma\\$
+Theo đề bài thì:\\
+$
+	\begin{cases}
+	\alpha + \beta = 0\\
+    2\alpha + \beta + \gamma = 1\\
+    4\alpha + \beta + 2\gamma = 2
+	\end{cases}
+$
+$\Leftrightarrow 
+	\begin{cases}
+	\alpha = 0\\
+    \beta = 0\\
+    \gamma = 1
+	\end{cases}
+$\\
+Do đó $T(n) = n = O(n)$\\
+
+	
+$T(n) = T(n - 1) + T(n - 2)$\\
+$T(0) = 0$\\
+$T(1) = 1$
+
+\addcontentsline{toc}{section}{Bài tập 4}
+	
+\clearpage
+
+\section*{Bài tập 5}
+Giải phương trình đệ quy
+
+$T(0) = 1\\
+T(n) = T(n - 1) + 7$ nếu $n \geq 1$
+	
+Hàm sinh của dãy vô hạn $\left\{T(n)\right\}_{n = 0}^ {\infty}$ có dạng
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+f(x) &= \sum_{n = 0} ^ {\infty}T(n)x^ n\\
+	 &= \sum_{n = 1} ^ {\infty}(T(n - 1) + 7)x^ n + 1\\
+	 &= \sum_{n = 1} ^ {\infty}T(n - 1)x^ n + 7\sum_{n = 1} ^ {\infty}x^ n + 1
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+A &= \sum_{n = 1} ^ {\infty}T(n - 1)x^ n = x\sum_{n = 1} ^ {\infty}T(n - 1)x^ {n - 1} = xf(x)\\
+B &= \sum_{n = 1} ^ {\infty}x^ n = \sum_{n = 0} ^ {\infty}x^ n - 1 = \frac{1}{1 - x} -1
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+&\Rightarrow f(x) = xf(x) + 7\left(\frac{1}{1 - x}-1\right) + 1 = xf(x) + \frac{6x + 1}{1 - x} &\\
+&\Leftrightarrow(1 - x)f(x) = \frac{6x + 1}{1 - x}
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+\Leftrightarrow f(x) &= \frac{6x + 1}{(1 - x) ^ 2}\\
+					 &= \frac{6x}{{1 - x} ^ 2}+\frac{1}{(1 - x) ^ 2}\\
+					 &= 6\sum_{n = 0} ^ {\infty}nx^ n - 1 + \sum_{n = 0} ^ {\infty}(n + 1)x^ n\\
+					 &= \sum_{n = 0} ^ {\infty}(7n + 1)x^ n - 1
+\end{align*}
+Do đó $T(n) = 7n + 1 = O(n)$\\
+	
+$T(n) = 7T(n - 1) - 12T(n - 2)$ nếu $ \geq 2$\\
+$T(0) = 1\\
+T(1) = 2$
+	
+Hàm sinh của dãy vô hạn $\left\{T(n)\right\}_{n = 0}^ {\infty}$ có dạng
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+f(x) &= \sum_{n = 0} ^ {\infty}T(n)x^ n\\
+	 &= \sum_{n = 2} ^ {\infty}(7T(n - 1) - 12T(n - 2))x^ n + 2x + 1\\
+	 &= 7\sum_{n = 2} ^ {\infty}T(n - 1)x^ n - 12\sum_{n = 2} ^ {\infty}T(n - 2)x^ n + 2x + 1
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+A &= \sum_{n = 2} ^ {\infty}T(n - 1)x^ n = x\sum_{n = 2} ^ {\infty}T(n - 1)x^ {n - 1} = x(f(x) - 1) = xf(x) - x\\
+B &= \sum_{n = 2} ^ {\infty}T(n - 2)x^ n = x ^ 2\sum_{n = 2} ^ {\infty}T(n - 2)x^ {n - 2} = x ^ 2f(x)
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+&\Rightarrow f(x) = 7xf(x) - 7x - 12x ^ 2f(x) + 2x + 1\\
+& \Leftrightarrow(1 - 7x + 12x ^ 2)f(x) = 1 - 5x
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+\Leftrightarrow f(x) &= \frac{1 - 5x}{1 - 7x + 12x ^ 2} = \frac{2}{1 - 3x}-\frac{1}{1 - 4x}\\
+					 &= 2\sum_{n = 0} ^ {\infty}(3x) ^ n - \sum_{n = 0} ^ {\infty}(4x) ^ n\\
+					 &= \sum_{n = 0} ^ {\infty}(2.3 ^ n - 4 ^ n)x^ n - 1
+\end{align*}
+Do đó $T(n) = 2.3 ^ n - 4 ^ n = O\left(3 ^ n\right)$\\
+	
+$T(n + 1) = T(n) + 2(n + 2)$ nếu $n \geq 0$\\
+$T(0) = 3$
+	
+Phương trình $T(n + 1) = T(n) + 2(n + 2)$ với $n \geq 0$ tương đương với phương trình $T(n) = T(n - 1) + 2(n + 1)$ với $n \geq 1$\\
+Hàm sinh của dãy vô hạn $\left\{T(n)\right\}_{n = 0}^ {\infty}$ có dạng
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+f(x) &= \sum_{n = 0} ^ {\infty}T(n)x^ n\\
+	 &= \sum_{n = 1} ^ {\infty}(T(n - 1) + 2(n + 1))x^ n + 3\\
+	 &= \sum_{n = 1} ^ {\infty}T(n - 1)x^ n + 2\sum_{n = 1} ^ {\infty}(n + 1)x^ n + 3
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+A &= \sum_{n = 1} ^ {\infty}T(n - 1)x^ n = x\sum_{n = 1} ^ {\infty}T(n - 1)x^ {n - 1} = xf(x)\\
+B &= \sum_{n = 1} ^ {\infty}(n + 1)x^ n = \sum_{n = 0} ^ {\infty}(n + 1)x^ n - 1 = \frac{1}{(1 - x) ^ 2} - 1
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+&\Rightarrow f(x) = xf(x) + 2\left(\frac{1}{(1 - x) ^ 2} - 1\right) + 3\\
+&\Leftrightarrow(1 - x)f(x) = \frac{2}{(1 - x) ^ 2} + 1
+\end{align*}
+\setlength{\abovedisplayskip}{3pt}%
+\setlength{\belowdisplayskip}{3pt}%
+\begin{align*}
+\Leftrightarrow f(x) &= \frac{2}{(1 - x) ^ 3}+\frac{1}{1 - x}\\
+					 &= 2\sum_{n = 0} ^ {\infty} {{n + 2}\choose{2}}x^ n + \sum_{n = 0}^ {\infty}x^ n\\
+					 &= 2\sum_{n = 0} ^ {\infty}\frac{(n + 2)(n + 1)}{2}x^ n + \sum_{n = 0}^ {\infty}x^ n\\
+					 &= \sum_{n = 0} ^ {\infty}(n + 2)(n + 1)x^ n + \sum_{n = 0}^ {\infty}x^ n\\
+					 &= \sum_{n = 0} ^ {\infty}((n + 2)(n + 1) + 1)x^ n
+\end{align*}
+Do đó $T(n) = (n + 2)(n + 1) + 1 = O\left(n ^ 2\right)$
+
+\addcontentsline{toc}{section}{Bài tập 5}
+
+\end{document}
